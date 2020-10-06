@@ -27,11 +27,8 @@ class Halma:
     
     # turn = 0 (player 1), turn = 1 (player 2)
     # position dalam tuple (i,j)
-    def calculate_distance(self, turn, position): 
-        if turn == 0 :
-            return ((self.bSize - position[0])**2 + (self.bSize - position[1])**2)**0.5
-        else :
-            return ((position[0])**2 + (position[1])**2)**0.5
+    def calculate_distance(self, currPos, goalPos): 
+        return ((goalPos[0] - currPos[0])**2 + (goalPos[1] - currPos[1])**2)**0.5
 
     # generate list of tuple valid action (0, (i,j)) atau (1, (i,j))
     # 0 berarti gabisa jalan lagi
@@ -68,8 +65,33 @@ class Halma:
                     return False
                 
             return True
+    
+    def objective_func(self, turn, position):
+        # turn = 0 (player 1), turn = 1 (player 2)
+        # ilustrasi prioritas:
+        # turn 1    turn 0
+        # 1 2 4 7        10
+        # 3 5 8         9 6
+        # 6 9         8 5 3
+        # 10        7 4 2 1
+        
+        for n in range(self.bSize//2):
+            for m in range(n+1):
+                if turn == 1:
+                    pos_i = m
+                    pos_j = n-m
+                else: # turn = 0
+                    pos_i = self.bSize-m-1
+                    pos_j = self.bSize-n+m-1
+                if self.board_state[pos_i][pos_j] != turn+1:
+                    # kalau isinya bukan pion dari turn maka return
+                    print(pos_i, pos_j)
+                    return self.calculate_distance(position, (pos_i, pos_j))
+
 
 if __name__ == "__main__":
     a = Halma(16)
     a.print_board()
-    print(a.valid_action((10,10)))
+    print(a.board_state[1][7])
+    # a.board_state[15][15] = 1
+    print(a.objective_func(0,(0,0)))
