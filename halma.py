@@ -41,16 +41,16 @@ class Halma:
         for i in range(position[0]-1, position[0]+2) :
             dif_i = i - position[0]
 
-            if i >= 0:
+            if i >= 0 and i < self.bSize:
                 for j in range(position[1]-1, position[1]+2):
-                    if j >= 0:
+                    if j >= 0 and j < self.bSize:
                         dif_j = j - position[1]
                         if self.board_state[i][j] == 0 :
                             listOfValidActions.append((0, (i,j)))
                         else : # lompatin 1 pion, masih bisa gerak lagi
                             jump_i = i + dif_i
                             jump_j = j + dif_j
-                            if jump_i >= 0 and jump_j >= 0 :
+                            if jump_i >= 0 and jump_i < self.bSize and jump_j >= 0 and jump_j < self.bSize :
                                 if self.board_state[jump_i][jump_j] == 0:
                                     listOfValidActions.append((1, (jump_i, jump_j)))
 
@@ -72,3 +72,4 @@ class Halma:
 if __name__ == "__main__":
     a = Halma(16)
     a.print_board()
+    print(a.valid_action((10,10)))
