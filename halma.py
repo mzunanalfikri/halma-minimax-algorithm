@@ -85,9 +85,46 @@ class Halma:
                     pos_j = self.bSize-n+m-1
                 if self.board_state[pos_i][pos_j] != turn+1:
                     # kalau isinya bukan pion dari turn maka return
-                    print(pos_i, pos_j)
+                    # print(pos_i, pos_j)
                     return self.calculate_distance(position, (pos_i, pos_j))
 
+    def max_func(self, depth, isplayer1):
+        if isplayer1 == 0:
+            turn = 1
+        else:
+            turn = 0
+
+        if depth == 0:
+            return None, self.check_win_state(isplayer1)
+        maxVal = 0
+        movetaken = None
+        
+        for neighbor in self.pos_A:
+            validactions = self.valid_action(neighbor)
+            for act in validactions:
+                tmp = self.objective_func(turn, act[1])
+                if(tmp > maxVal):
+                    maxVal = tmp
+        print("maxval "+str(maxVal))
+
+    def min_func(self, depth, isplayer1):
+        if isplayer1 == 0:
+            turn = 1
+        else:
+            turn = 0
+
+        if depth == 0:
+            return None, self.check_win_state(isplayer1)
+        minval = 100
+        movetaken = None
+        
+        for neighbor in self.pos_A:
+            validactions = self.valid_action(neighbor)
+            for act in validactions:
+                tmp = self.objective_func(turn, act[1])
+                if(tmp < minval):
+                    maxVal = tmp
+        print("minval "+str(maxVal))
 
 if __name__ == "__main__":
     a = Halma(16)
@@ -95,3 +132,5 @@ if __name__ == "__main__":
     print(a.board_state[1][7])
     # a.board_state[15][15] = 1
     print(a.objective_func(0,(0,0)))
+    a.max_func(3, 1)
+    a.min_func(3, 0)
