@@ -57,6 +57,32 @@ class Halma:
 
         return listOfValidActions
     
+    def generate_valid_state(self, board, player) :
+        if player == 1 :
+            listPos = self.pos_A
+        elif player == 2 :
+            listPos = self.pos_B
+        else :
+            print("Tidak valid")
+            return
+        
+        listOfValidState = []
+        for pos in listPos :
+            listOfValidActions = self.valid_action(pos)
+
+            
+            for action in listOfValidActions :
+                state = self.board_state
+                if action[0] == 0 : # ngga lompatin pion
+                    state[pos[0]][pos[1]] = 0
+                    state[action[1][0]][action[1][1]] = player
+
+                    # (state board, posisi awal perpindahan, posisi akhir perpindahan)
+                    listOfValidState.append((state, pos, action[1]))
+        
+        return listOfValidState
+
+
     def check_win_state(self, turn) :
         if turn == 0 :
             for x,y in self.pos_A :
