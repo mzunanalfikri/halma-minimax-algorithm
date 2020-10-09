@@ -73,12 +73,12 @@ class Halma:
             
             for action in listOfValidActions :
                 state = self.board_state
-                if action[0] == 0 : # ngga lompatin pion
-                    state[pos[0]][pos[1]] = 0
-                    state[action[1][0]][action[1][1]] = player
+                
+                state[pos[0]][pos[1]] = 0
+                state[action[1][0]][action[1][1]] = player
 
-                    # (state board, posisi awal perpindahan, posisi akhir perpindahan)
-                    listOfValidState.append((state, pos, action[1]))
+                # (state board, posisi awal perpindahan, posisi akhir perpindahan, boolean apakah habis lompat atau ngga)
+                listOfValidState.append((state, pos, action[1], action[0]))
         
         return listOfValidState
 
