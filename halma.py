@@ -99,13 +99,16 @@ class Halma:
         maxVal = 0
         movetaken = None
         
-        for neighbor in self.pos_A:
-            validactions = self.valid_action(neighbor)
-            for act in validactions:
-                tmp = self.objective_func(turn, act[1])
-                if(tmp > maxVal):
-                    maxVal = tmp
-        print("maxval "+str(maxVal))
+        if self.check_win_state(isplayer1):
+            return "Win"
+        else:
+            for neighbor in self.pos_A:
+                validactions = self.valid_action(neighbor)
+                for act in validactions:
+                    tmp = self.min_func(turn, act[1])
+                    if(tmp > maxVal):
+                        maxVal = tmp
+            print("maxval "+str(maxVal))
 
     def min_func(self, depth, isplayer1):
         if isplayer1 == 0:
@@ -118,13 +121,16 @@ class Halma:
         minval = 100
         movetaken = None
         
-        for neighbor in self.pos_A:
-            validactions = self.valid_action(neighbor)
-            for act in validactions:
-                tmp = self.objective_func(turn, act[1])
-                if(tmp < minval):
-                    maxVal = tmp
-        print("minval "+str(maxVal))
+        if self.check_win_state(isplayer1):
+            return "Win"
+        else:
+            for neighbor in self.pos_A:
+                validactions = self.valid_action(neighbor)
+                for act in validactions:
+                    tmp = self.objective_func(turn, act[1])
+                    if(tmp < minval):   
+                        maxVal = tmp
+            print("minval "+str(maxVal))
 
 if __name__ == "__main__":
     a = Halma(16)
