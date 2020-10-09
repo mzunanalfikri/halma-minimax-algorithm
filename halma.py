@@ -1,5 +1,5 @@
-import sys 
-sys.setrecursionlimit(1000) 
+# import sys 
+# sys.setrecursionlimit(1000) 
 
 MAX_DEPTH = 3
 class Halma:
@@ -92,6 +92,17 @@ class Halma:
                     # print(pos_i, pos_j)
                     return self.calculate_distance(position, (pos_i, pos_j))
 
+    def eval_board(self, turn):
+        map_obj = []
+        if turn == 0:
+            for p in self.pos_A:
+                map_obj.append(self.objective_func(turn, p))
+        else:
+            for p in self.pos_B:
+                map_obj.append(self.objective_func(turn, p))
+
+        return map_obj
+
     def max_func(self, depth, player, pos):
         if player == 0:
             turn = 1
@@ -100,7 +111,7 @@ class Halma:
 
         if depth == MAX_DEPTH or self.check_win_state(player):
             return self.objective_func(player, pos)
-        maxVal = float('-inf')
+        maxval = float('-inf')
         # movetaken = None
         
         if self.check_win_state(player):
@@ -110,14 +121,14 @@ class Halma:
                 validactions = self.valid_action(neighbor)
                 for act in validactions:
                     # print(act)
-                    maxVal = max(maxVal, self.min_func(depth+1, player, act[1]))
-                    # print(maxVal)
+                    maxval = max(maxval, self.min_func(depth+1, player, act[1]))
+                    # print(maxval)
                     # tmp = self.objective_func(turn, act[1])
                     # # print(tmp)
-                    # if(tmp > maxVal):
-                    #     maxVal = tmp
-            # print("maxval "+str(maxVal))
-            return maxVal
+                    # if(tmp > maxval):
+                    #     maxval = tmp
+            # print("maxval "+str(maxval))
+            return maxval
 
     def min_func(self, depth, player, pos):
         if player == 0:
@@ -151,6 +162,9 @@ if __name__ == "__main__":
     a = Halma(16)
     a.print_board()
     print(a.board_state[1][7])
+    ev = a.eval_board(0)
+    for e in ev:
+        print(e)
     # a.board_state[15][15] = 1
     print(a.objective_func(0,(0,0)))
     print("Max : " + str(a.max_func(1, 1, (0,0))))
