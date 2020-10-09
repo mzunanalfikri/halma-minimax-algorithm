@@ -22,10 +22,8 @@ def possible_state(state):
 
 def min_value(state, depth):
     print("depth : ", depth)
-    if check_win_state(state):
-        return random.random()
-    elif depth == MAX_DEPTH:
-        return random.random()
+    if depth == MAX_DEPTH or check_win_state(state):
+        return objective_func(state)
     
     v = float('inf')
     for s in possible_state(state):
@@ -34,11 +32,9 @@ def min_value(state, depth):
 
 def max_value(state, depth):
     print("depth : ", depth)
-    if check_win_state(state):
-        return random.random()
-    elif depth == MAX_DEPTH:
-        return random.random()
-    
+    if depth == MAX_DEPTH or check_win_state(state):
+        return objective_func(state)
+
     v = float('-inf')
     for s in possible_state(state):
         v = max(v, min_value(s, depth + 1))
@@ -46,6 +42,9 @@ def max_value(state, depth):
 
 def check_win_state(state):
     return False
+
+def objective_func(state):
+    return random.random()
 
 if __name__ == "__main__":
     print(minimax_decision(4))
