@@ -1,3 +1,7 @@
+import sys 
+sys.setrecursionlimit(1000) 
+
+MAX_DEPTH = 3
 class Halma:
     def __init__(self, size):
         self.bSize = size
@@ -88,49 +92,60 @@ class Halma:
                     # print(pos_i, pos_j)
                     return self.calculate_distance(position, (pos_i, pos_j))
 
-    def max_func(self, depth, isplayer1):
-        if isplayer1 == 0:
+    def max_func(self, depth, player, pos):
+        if player == 0:
             turn = 1
         else:
             turn = 0
 
-        if depth == 0:
-            return None, self.check_win_state(isplayer1)
-        maxVal = 0
-        movetaken = None
+        if depth == MAX_DEPTH or self.check_win_state(player):
+            return self.objective_func(player, pos)
+        maxVal = float('-inf')
+        # movetaken = None
         
-        if self.check_win_state(isplayer1):
-            return "Win"
+        if self.check_win_state(player):
+            return "Player " + str(player) + "Win"
         else:
             for neighbor in self.pos_A:
                 validactions = self.valid_action(neighbor)
                 for act in validactions:
-                    tmp = self.min_func(turn, act[1])
-                    if(tmp > maxVal):
-                        maxVal = tmp
-            print("maxval "+str(maxVal))
+                    # print(act)
+                    maxVal = max(maxVal, self.min_func(depth+1, player, act[1]))
+                    # print(maxVal)
+                    # tmp = self.objective_func(turn, act[1])
+                    # # print(tmp)
+                    # if(tmp > maxVal):
+                    #     maxVal = tmp
+            # print("maxval "+str(maxVal))
+            return maxVal
 
-    def min_func(self, depth, isplayer1):
-        if isplayer1 == 0:
+    def min_func(self, depth, player, pos):
+        if player == 0:
             turn = 1
         else:
             turn = 0
-
-        if depth == 0:
-            return None, self.check_win_state(isplayer1)
-        minval = 100
-        movetaken = None
+    
+        if depth == MAX_DEPTH or self.check_win_state(player):
+            # print(pos)
+            return self.objective_func(turn, pos)
+        minval = float('inf')
+        # movetaken = None
         
-        if self.check_win_state(isplayer1):
-            return "Win"
+        if self.check_win_state(player):
+            return "Player " + str(player) + "Win"
         else:
             for neighbor in self.pos_A:
                 validactions = self.valid_action(neighbor)
                 for act in validactions:
-                    tmp = self.objective_func(turn, act[1])
-                    if(tmp < minval):   
-                        maxVal = tmp
-            print("minval "+str(maxVal))
+                    # print(act)
+                    minval = min(minval, self.max_func(depth+1, player, act[1]))
+                    # print(minval)
+                    # tmp = self.objective_func(turn, act[1])
+                    # # print(tmp)
+                    # if(tmp < minval):   
+                    #     minval = tmp
+            # print("minval "+str(minval))
+            return minval
 
 if __name__ == "__main__":
     a = Halma(16)
@@ -138,5 +153,5 @@ if __name__ == "__main__":
     print(a.board_state[1][7])
     # a.board_state[15][15] = 1
     print(a.objective_func(0,(0,0)))
-    a.max_func(3, 1)
-    a.min_func(3, 0)
+    print("Max : " + str(a.max_func(1, 1, (0,0))))
+    print("Min : " + str(a.min_func(1, 1, (0,0))))
