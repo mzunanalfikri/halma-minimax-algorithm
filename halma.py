@@ -41,12 +41,9 @@ class Halma:
     def valid_actions_step(self, state, position):
         listOfValidActions = []
         for i in range(position[0]-1, position[0]+2) :
-            dif_i = i - position[0]
-
             if i >= 0 and i < self.bSize:
                 for j in range(position[1]-1, position[1]+2):
                     if j >= 0 and j < self.bSize:
-                        dif_j = j - position[1]
                         if state[i][j] == 0 :
                             listOfValidActions.append( (i,j))
 
@@ -65,7 +62,7 @@ class Halma:
                         jump_i = i + dif_i
                         jump_j = j + dif_j
                         if jump_i >= 0 and jump_i < self.bSize and jump_j >= 0 and jump_j < self.bSize :
-                            if state[jump_i][jump_j] == 0:
+                            if state[jump_i][jump_j] == 0 and state[i][j] != 0:
                                 listOfValidActions.append((jump_i, jump_j))
 
         return listOfValidActions
@@ -297,7 +294,7 @@ if __name__ == "__main__":
     a = Halma(8)
     # a.board_state[3][0] = 0 
     a.print_board()
-    print(a.valid_actions_jump(a.board_state, (2,0) ))
+    print(a.valid_actions_jump(a.board_state, (0,1) ))
     # print(a.board_state[1][7])
     # ev = a.eval_board(0)
     # for e in ev:
