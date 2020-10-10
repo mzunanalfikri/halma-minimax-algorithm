@@ -185,14 +185,14 @@ class Halma:
             # print("minval "+str(minval))
             return minval
 
-    def minimax_decision(self, state):
+    def minimax_decision(self, state, turn):
         generated_state = self.possible_state(state)
         print(generated_state)
         best_state_idx = 0
         max_obj_value = float('-inf')
         for i in range(len(generated_state)):
-            print("obj value :", self.min_value(state,1))
-            temp_obj_value = self.min_value(state, 1)
+            # print("obj value :", self.min_value(state,1, turn))
+            temp_obj_value = self.min_value(state, 1, turn)
             if  temp_obj_value > max_obj_value :
                 max_obj_value = temp_obj_value
                 best_state_idx = i
@@ -203,27 +203,32 @@ class Halma:
         #iterasi semua pion, pakai fungsi generate_all_move
         return [random.random() for i in range(2)]
 
-    def min_value(self, state, depth):
+    def min_value(self, state, depth, turn):
         print("depth : ", depth)
-        if depth == MAX_DEPTH or self.check_win_state(state):
-            return self.objective_func_board(state)
+        if depth == MAX_DEPTH or self.check_win_state_board(state, turn):
+            return self.objective_func_board(state, turn)
         
         v = float('inf')
         for s in self.possible_state(state):
-            v = min(v, self.max_value(s, depth + 1))
+            v = min(v, self.max_value(s, depth + 1, turn))
         return v
 
-    def max_value(self, state, depth):
+    def max_value(self, state, depth, turn):
         print("depth : ", depth)
-        if depth == MAX_DEPTH or self.check_win_state(state):
-            return self.objective_func_board(state)
+        if depth == MAX_DEPTH or self.check_win_state_board(state, turn):
+            return self.objective_func_board(state, turn)
 
         v = float('-inf')
         for s in self.possible_state(state):
-            v = max(v, self.min_value(s, depth + 1))
+            v = max(v, self.min_value(s, depth + 1, turn))
         return v
 
-    def objective_func_board(self, state):
+    def check_win_state_board(self, state, turn):
+        return False
+
+    # return value objective fucntion dari suatu board
+    # player 
+    def objective_func_board(self, state, turn):
         return random.random()
 
     # ini masih bayangan
@@ -238,7 +243,7 @@ class Halma:
         pos_move.append(init_jump_step)
         queue.append(init_jump_step)
         while len(queue) != 0 :
-            temp_move = queue.pop()
+            temp_move = queue.pop(0)
             if temp_move not in expand: #kalo belom pernah di expand, expand!
                 expand.append(temp_move)
                 #generate semua langkah loncat yang mungkin dari yang di expand
