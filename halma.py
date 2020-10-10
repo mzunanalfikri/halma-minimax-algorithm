@@ -37,7 +37,7 @@ class Halma:
     # generate list of tuple valid action (0, (i,j)) atau (1, (i,j))
     # 0 berarti gabisa jalan lagi
     # 1 berarti masih bisa jalan lagi
-    def valid_action(self, position):
+    def valid_action(self, state, position):
         listOfValidActions = []
         for i in range(position[0]-1, position[0]+2) :
             dif_i = i - position[0]
@@ -46,16 +46,39 @@ class Halma:
                 for j in range(position[1]-1, position[1]+2):
                     if j >= 0 and j < self.bSize:
                         dif_j = j - position[1]
-                        if self.board_state[i][j] == 0 :
+                        if state[i][j] == 0 :
                             listOfValidActions.append((0, (i,j)))
-                        else : # lompatin 1 pion, masih bisa gerak lagi
-                            jump_i = i + dif_i
-                            jump_j = j + dif_j
-                            if jump_i >= 0 and jump_i < self.bSize and jump_j >= 0 and jump_j < self.bSize :
-                                if self.board_state[jump_i][jump_j] == 0:
-                                    listOfValidActions.append((1, (jump_i, jump_j)))
 
         return listOfValidActions
+
+    def valid_actions_jump(self, state, position):
+        listOfValidActions = []
+
+        for i in range(position[0] - 1, position[0] + 2) :
+            dif_i = i - position[0]
+
+            if i >= 0 and i < self.bSize:
+                for j in range(position[1]-1, position[1]+2):
+                    if j >= 0 and j < self.bSize:
+                        dif_j = j - position[1]
+                        jump_i = i + dif_i
+                        jump_j = j + dif_j
+                        if jump_i >= 0 and jump_i < self.bSize and jump_j >= 0 and jump_j < self.bSize :
+                            if state[jump_i][jump_j] == 0:
+                                listOfValidActions.append((jump_i, jump_j))
+
+        return listOfValidActions
+
+    def copy_board(self, board) :
+        sizeboard = len(board)
+        new_board = [[0 for i in range(sizeboard)] for j in range(sizeboard)]
+        for i in range(sizeboard) :
+            for j in range(sizeboard) :
+                new_board[i][j] = board[i][j]
+        
+        return new_board
+
+            
     
     def generate_valid_state(self, board, player) :
         if player == 1 :
@@ -68,11 +91,11 @@ class Halma:
         
         listOfValidState = []
         for pos in listPos :
-            listOfValidActions = self.valid_action(pos)
+            listOfValidActions = self.valid_action(board, pos)
 
             
             for action in listOfValidActions :
-                state = self.board_state
+                state = self.copy_board(board)
                 
                 state[pos[0]][pos[1]] = 0
                 state[action[1][0]][action[1][1]] = player
@@ -187,11 +210,12 @@ class Halma:
 if __name__ == "__main__":
     a = Halma(16)
     a.print_board()
-    print(a.board_state[1][7])
-    ev = a.eval_board(0)
-    for e in ev:
-        print(e)
-    # a.board_state[15][15] = 1
-    print(a.objective_func(0,(0,0)))
-    print("Max : " + str(a.max_func(1, 1, (0,0))))
-    print("Min : " + str(a.min_func(1, 1, (0,0))))
+    # print(a.board_state[1][7])
+    # ev = a.eval_board(0)
+    # for e in ev:
+    #     print(e)
+    # # a.board_state[15][15] = 1
+    # print(a.objective_func(0,(0,0)))
+    # print("Max : " + str(a.max_func(1, 1, (0,0))))
+    # print("Min : " + str(a.min_func(1, 1, (0,0))))
+    print(a.copy_board([[1,2,3],[4,5,6],[7,8,9]]))
