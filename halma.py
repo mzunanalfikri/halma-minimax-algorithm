@@ -38,7 +38,7 @@ class Halma:
     # generate list of tuple valid action (0, (i,j)) atau (1, (i,j))
     # 0 berarti gabisa jalan lagi
     # 1 berarti masih bisa jalan lagi
-    def valid_action(self, state, position):
+    def valid_actions_step(self, state, position):
         listOfValidActions = []
         for i in range(position[0]-1, position[0]+2) :
             dif_i = i - position[0]
@@ -48,7 +48,7 @@ class Halma:
                     if j >= 0 and j < self.bSize:
                         dif_j = j - position[1]
                         if state[i][j] == 0 :
-                            listOfValidActions.append((0, (i,j)))
+                            listOfValidActions.append( (i,j))
 
         return listOfValidActions
 
@@ -102,7 +102,7 @@ class Halma:
                 state[action[1][0]][action[1][1]] = player
 
                 # (state board, posisi awal perpindahan, posisi akhir perpindahan, boolean apakah habis lompat atau ngga)
-                listOfValidState.append((state, pos, action[1], action[0]))
+                listOfValidState.append((state, pos, action))
         
         return listOfValidState
 
@@ -294,8 +294,10 @@ class Halma:
         return []
 
 if __name__ == "__main__":
-    a = Halma(16)
+    a = Halma(8)
+    # a.board_state[3][0] = 0 
     a.print_board()
+    print(a.valid_actions_jump(a.board_state, (2,0) ))
     # print(a.board_state[1][7])
     # ev = a.eval_board(0)
     # for e in ev:
@@ -304,4 +306,4 @@ if __name__ == "__main__":
     # print(a.objective_func(0,(0,0)))
     # print("Max : " + str(a.max_func(1, 1, (0,0))))
     # print("Min : " + str(a.min_func(1, 1, (0,0))))
-    print(a.copy_board([[1,2,3],[4,5,6],[7,8,9]]))
+    # print(a.copy_board([[1,2,3],[4,5,6],[7,8,9]]))
