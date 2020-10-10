@@ -1,5 +1,6 @@
 # import sys 
 # sys.setrecursionlimit(1000) 
+import random
 
 MAX_DEPTH = 3
 class Halma:
@@ -183,6 +184,79 @@ class Halma:
                     #     minval = tmp
             # print("minval "+str(minval))
             return minval
+
+    def minimax_decision(self, state):
+        generated_state = self.possible_state(state)
+        print(generated_state)
+        best_state_idx = 0
+        max_obj_value = float('-inf')
+        for i in range(len(generated_state)):
+            print("obj value :", self.min_value(state,1))
+            temp_obj_value = self.min_value(state, 1)
+            if  temp_obj_value > max_obj_value :
+                max_obj_value = temp_obj_value
+                best_state_idx = i
+        # return max_obj_value
+        return generated_state[best_state_idx] # harusnya ini yang dipakai
+
+    def possible_state(self, state):
+        #iterasi semua pion, pakai fungsi generate_all_move
+        return [random.random() for i in range(2)]
+
+    def min_value(self, state, depth):
+        print("depth : ", depth)
+        if depth == MAX_DEPTH or self.check_win_state(state):
+            return self.objective_func_board(state)
+        
+        v = float('inf')
+        for s in self.possible_state(state):
+            v = min(v, self.max_value(s, depth + 1))
+        return v
+
+    def max_value(self, state, depth):
+        print("depth : ", depth)
+        if depth == MAX_DEPTH or self.check_win_state(state):
+            return self.objective_func_board(state)
+
+        v = float('-inf')
+        for s in self.possible_state(state):
+            v = max(v, self.min_value(s, depth + 1))
+        return v
+
+    def objective_func_board(self, state):
+        return random.random()
+
+    # ini masih bayangan
+    def generate_all_move(self, state, position):
+        pos_move = [] #hasil
+        queue = []
+        expand = []
+        #generate yang satu step
+        pos_move.append(self.generate_one_step(state, position))
+        #inisiasi gerakan yang lompat
+        init_jump_step = self.generate_jump_step(state, position)
+        pos_move.append(init_jump_step)
+        queue.append(init_jump_step)
+        while len(queue) != 0 :
+            temp_move = queue.pop()
+            if temp_move not in expand: #kalo belom pernah di expand, expand!
+                expand.append(temp_move)
+                #generate semua langkah loncat yang mungkin dari yang di expand
+                temp_jump_move = self.generate_jump_step(state, temp_move)
+                for move in temp_jump_move:
+                    if move not in pos_move: 
+                        pos_move.append(move)
+                    if move not in queue: # masukin ke queue buat generate lagi nanti
+                        queue.append(move)
+        return pos_move
+
+    # generate satu step dari board state dengan pion dengan posisi position
+    def generate_one_step(self, state, position):
+        return []
+
+     # generate jump step dari board state dengan pion dengan posisi position
+    def generate_jump_step(self, state, position):
+        return []
 
 if __name__ == "__main__":
     a = Halma(16)
