@@ -185,6 +185,7 @@ class Halma:
             # print("minval "+str(minval))
             return minval
 
+    # mengembalikan keputusan terbaik dari suatu state dan player tertentu 
     def minimax_decision(self, state, turn):
         generated_state = self.possible_state(state)
         print(generated_state)
@@ -199,8 +200,10 @@ class Halma:
         # return max_obj_value
         return generated_state[best_state_idx] # harusnya ini yang dipakai
 
+    # mengembalikan list of state dari semua state yang mungkin dari suatu posisi
     def possible_state(self, state):
         #iterasi semua pion, pakai fungsi generate_all_move
+        # TO DO 
         return [random.random() for i in range(2)]
 
     def min_value(self, state, depth, turn):
@@ -223,6 +226,7 @@ class Halma:
             v = max(v, self.min_value(s, depth + 1, turn))
         return v
 
+    # check win state dari suatu board
     def check_win_state_board(self, state, turn):
         return False
 
@@ -231,7 +235,8 @@ class Halma:
     def objective_func_board(self, state, turn):
         return random.random()
 
-    # ini masih bayangan
+    # generate semua kemungkinan posisi dari yang mungkin dari suatu pion
+    # return list of position 
     def generate_all_move(self, state, position):
         pos_move = [] #hasil
         queue = []
@@ -257,10 +262,12 @@ class Halma:
 
     # generate satu step dari board state dengan pion dengan posisi position
     def generate_one_step(self, state, position):
+        # TO DO
         return []
 
      # generate jump step dari board state dengan pion dengan posisi position
     def generate_jump_step(self, state, position):
+        # TO DO 
         return []
 
 if __name__ == "__main__":
