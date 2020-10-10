@@ -206,14 +206,14 @@ class Halma:
             return minval
 
     # mengembalikan keputusan terbaik dari suatu state dan player tertentu 
-    def minimax_decision(self, state, turn):
-        generated_state = self.possible_state(state)
-        print(generated_state)
+    def minimax_decision(self, player):
+        generated_state = self.possible_state(self.board_state, player)
+        # print(generated_state)
         best_state_idx = 0
         max_obj_value = float('-inf')
         for i in range(len(generated_state)):
-            # print("obj value :", self.min_value(state,1, turn))
-            temp_obj_value = self.min_value(state, 1, turn)
+            # print("obj value :", self.min_value(state,1, player))
+            temp_obj_value = self.min_value(self.board_state, 1, player)
             if  temp_obj_value > max_obj_value :
                 max_obj_value = temp_obj_value
                 best_state_idx = i
@@ -221,38 +221,57 @@ class Halma:
         return generated_state[best_state_idx] # harusnya ini yang dipakai
 
     # mengembalikan list of state dari semua state yang mungkin dari suatu posisi
-    def possible_state(self, state):
+    def possible_state(self, state, player):
         #iterasi semua pion, pakai fungsi generate_all_move
         # TO DO 
-        return [random.random() for i in range(2)]
+        assert player == 2 or player == 1
+        all_state = []
+        for i in range(self.bSize):
+            for j in range(self.bSize):
+                if (state[i][j] == player):
+                    all_state += self.generate_all_move(state, (i,j))
+        return all_state
 
-    def min_value(self, state, depth, turn):
-        print("depth : ", depth)
-        if depth == MAX_DEPTH or self.check_win_state_board(state, turn):
-            return self.objective_func_board(state, turn)
+    def min_value(self, state, depth, player):
+        if depth == MAX_DEPTH or self.check_win_state_board(state, player):
+            return self.objective_func_board(state, player)
         
         v = float('inf')
-        for s in self.possible_state(state):
-            v = min(v, self.max_value(s, depth + 1, turn))
+        for s in self.possible_state(state, player):
+            v = min(v, self.max_value(s, depth + 1, player))
         return v
 
-    def max_value(self, state, depth, turn):
-        print("depth : ", depth)
-        if depth == MAX_DEPTH or self.check_win_state_board(state, turn):
-            return self.objective_func_board(state, turn)
+    def max_value(self, state, depth, player):
+        if depth == MAX_DEPTH or self.check_win_state_board(state, player):
+            return self.objective_func_board(state, player)
 
         v = float('-inf')
-        for s in self.possible_state(state):
-            v = max(v, self.min_value(s, depth + 1, turn))
+        for s in self.possible_state(state, player):
+            v = max(v, self.min_value(s, depth + 1, player))
         return v
 
     # check win state dari suatu board
-    def check_win_state_board(self, state, turn):
-        return False
+    def check_win_state_board(self, state, player):
+        assert player == 1 or player == 2
+        pion = []
+        for i in range(self.bSize):
+            for j in range(self.bSize):
+                if state[i][j] == player:
+                    pion.append((i,j))
+        if player == 1 :
+            for x,y in pion :
+                if x + y < self.bSize*3/2 - 1:
+                    return False
+            return True
+        else :
+            for x,y in pion :
+                if x + y > self.bSize/2 - 1 :
+                    return False
+            return True
 
     # return value objective fucntion dari suatu board
     # player 
-    def objective_func_board(self, state, turn):
+    def objective_func_board(self, state, player):
         return random.random()
 
     # generate semua kemungkinan posisi dari yang mungkin dari suatu pion
@@ -262,39 +281,59 @@ class Halma:
         queue = []
         expand = []
         #generate yang satu step
-        pos_move.append(self.generate_one_step(state, position))
+        pos_move += self.valid_actions_step(state, position)
         #inisiasi gerakan yang lompat
-        init_jump_step = self.generate_jump_step(state, position)
-        pos_move.append(init_jump_step)
-        queue.append(init_jump_step)
+        init_jump_step = self.valid_actions_jump(state, position)
+        pos_move += init_jump_step
+        queue += init_jump_step
         while len(queue) != 0 :
             temp_move = queue.pop(0)
+            # print('temp : ', temp_move, ' expand :', expand)
             if temp_move not in expand: #kalo belom pernah di expand, expand!
                 expand.append(temp_move)
                 #generate semua langkah loncat yang mungkin dari yang di expand
-                temp_jump_move = self.generate_jump_step(state, temp_move)
+                temp_jump_move = self.valid_actions_jump(state, temp_move)
+                # print('temp jump : ', temp_jump_move)
                 for move in temp_jump_move:
                     if move not in pos_move: 
                         pos_move.append(move)
                     if move not in queue: # masukin ke queue buat generate lagi nanti
                         queue.append(move)
-        return pos_move
-
-    # generate satu step dari board state dengan pion dengan posisi position
-    def generate_one_step(self, state, position):
-        # TO DO
-        return []
-
-     # generate jump step dari board state dengan pion dengan posisi position
-    def generate_jump_step(self, state, position):
-        # TO DO 
-        return []
+        res_state = []
+        copy_state = self.copy_board(state)
+        pion = copy_state[position[0]][position[1]]
+        copy_state[position[0]][position[1]] = 0
+        for p in pos_move:
+            temp = self.copy_board(copy_state)
+            temp[p[0]][p[1]] = pion
+            res_state.append(temp)
+        return res_state
 
 if __name__ == "__main__":
-    a = Halma(8)
+    def print_board(board):
+        for i in range(len(board)):
+            for j in range(len(board)):
+                if j == len(board) - 1 :
+                    print(board[i][j])
+                else :
+                    print(board[i][j], end=" ")
+    # a = Halma(8)
     # a.board_state[3][0] = 0 
-    a.print_board()
-    print(a.valid_actions_jump(a.board_state, (0,1) ))
+    # a.board_state[3][1] = 1 
+    # a.print_board()
+    # res = (a.generate_all_move(a.board_state, (2,0) ))
+    # for el in res:
+    #     print("="*10)
+    #     print_board(el)
+
+    b = Halma(4)
+    b.print_board()
+    print("="*90)
+    # res = b.possible_state(b.board_state, 1)
+    # for el in res:
+    #     print("="*10)
+    #     print_board(el)
+    print_board(b.minimax_decision(1))
     # print(a.board_state[1][7])
     # ev = a.eval_board(0)
     # for e in ev:
