@@ -1,5 +1,6 @@
 # import sys 
 # sys.setrecursionlimit(1000) 
+import random
 
 MAX_DEPTH = 3
 class Halma:
@@ -206,6 +207,91 @@ class Halma:
                     #     minval = tmp
             # print("minval "+str(minval))
             return minval
+
+    # mengembalikan keputusan terbaik dari suatu state dan player tertentu 
+    def minimax_decision(self, state, turn):
+        generated_state = self.possible_state(state)
+        print(generated_state)
+        best_state_idx = 0
+        max_obj_value = float('-inf')
+        for i in range(len(generated_state)):
+            # print("obj value :", self.min_value(state,1, turn))
+            temp_obj_value = self.min_value(state, 1, turn)
+            if  temp_obj_value > max_obj_value :
+                max_obj_value = temp_obj_value
+                best_state_idx = i
+        # return max_obj_value
+        return generated_state[best_state_idx] # harusnya ini yang dipakai
+
+    # mengembalikan list of state dari semua state yang mungkin dari suatu posisi
+    def possible_state(self, state):
+        #iterasi semua pion, pakai fungsi generate_all_move
+        # TO DO 
+        return [random.random() for i in range(2)]
+
+    def min_value(self, state, depth, turn):
+        print("depth : ", depth)
+        if depth == MAX_DEPTH or self.check_win_state_board(state, turn):
+            return self.objective_func_board(state, turn)
+        
+        v = float('inf')
+        for s in self.possible_state(state):
+            v = min(v, self.max_value(s, depth + 1, turn))
+        return v
+
+    def max_value(self, state, depth, turn):
+        print("depth : ", depth)
+        if depth == MAX_DEPTH or self.check_win_state_board(state, turn):
+            return self.objective_func_board(state, turn)
+
+        v = float('-inf')
+        for s in self.possible_state(state):
+            v = max(v, self.min_value(s, depth + 1, turn))
+        return v
+
+    # check win state dari suatu board
+    def check_win_state_board(self, state, turn):
+        return False
+
+    # return value objective fucntion dari suatu board
+    # player 
+    def objective_func_board(self, state, turn):
+        return random.random()
+
+    # generate semua kemungkinan posisi dari yang mungkin dari suatu pion
+    # return list of position 
+    def generate_all_move(self, state, position):
+        pos_move = [] #hasil
+        queue = []
+        expand = []
+        #generate yang satu step
+        pos_move.append(self.generate_one_step(state, position))
+        #inisiasi gerakan yang lompat
+        init_jump_step = self.generate_jump_step(state, position)
+        pos_move.append(init_jump_step)
+        queue.append(init_jump_step)
+        while len(queue) != 0 :
+            temp_move = queue.pop(0)
+            if temp_move not in expand: #kalo belom pernah di expand, expand!
+                expand.append(temp_move)
+                #generate semua langkah loncat yang mungkin dari yang di expand
+                temp_jump_move = self.generate_jump_step(state, temp_move)
+                for move in temp_jump_move:
+                    if move not in pos_move: 
+                        pos_move.append(move)
+                    if move not in queue: # masukin ke queue buat generate lagi nanti
+                        queue.append(move)
+        return pos_move
+
+    # generate satu step dari board state dengan pion dengan posisi position
+    def generate_one_step(self, state, position):
+        # TO DO
+        return []
+
+     # generate jump step dari board state dengan pion dengan posisi position
+    def generate_jump_step(self, state, position):
+        # TO DO 
+        return []
 
 if __name__ == "__main__":
     a = Halma(16)
