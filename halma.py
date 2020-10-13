@@ -5,8 +5,9 @@ import time
 
 MAX_DEPTH = 2
 class Halma:
-    def __init__(self, size):
+    def __init__(self, size, time_limit):
         self.bSize = size
+        self.time_limit = time_limit
         self.board_state = [[0 for i in range(size)] for j in range(size)]
         self.pos_A = []
         self.pos_B = []
@@ -250,6 +251,7 @@ class Halma:
 
     # mengembalikan keputusan terbaik dari suatu state dan player tertentu 
     def minimax_decision(self, player):
+        s = time.time()
         generated_state = self.possible_state(self.board_state, player)
         # for state in generated_state:
         #     print_board(state)
@@ -264,6 +266,8 @@ class Halma:
                 best_state_idx = [i]
             elif temp_obj_value == max_obj_value:
                 best_state_idx.append(i)
+            if time.time() - s > self.time_limit :
+                break
         # return max_obj_value
         random.shuffle(best_state_idx)
         self.board_state = generated_state[best_state_idx[0]]
@@ -425,7 +429,7 @@ if __name__ == "__main__":
     # b.board_state[3][7] = 2
     # print_board(b.minimax_decision(1))
     
-    halma = Halma(8)
+    halma = Halma(100, 100000)
     i = 1
     while (not halma.check_win_state_board(halma.board_state)):
         print("="*8, "turn", i, "="*8)
