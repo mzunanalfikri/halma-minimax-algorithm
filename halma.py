@@ -258,7 +258,7 @@ class Halma:
         max_obj_value = float('-inf')
         for i, state in enumerate(generated_state):
             # print("obj value :", self.min_value(state,1, player))
-            temp_obj_value = self.min_value(state, 1, player)
+            temp_obj_value = self.min_value(state, 1, player, float('-inf'), float('inf'))
             if  temp_obj_value > max_obj_value :
                 max_obj_value = temp_obj_value
                 best_state_idx = [i]
@@ -269,6 +269,39 @@ class Halma:
         self.board_state = generated_state[best_state_idx[0]]
         print(best_state_idx)
         return generated_state[best_state_idx[0]] # harusnya ini yang dipakai
+
+
+    def min_value(self, state, depth, player, alpha, beta):
+        if depth == MAX_DEPTH:
+            return self.objective_func_board(state, player)
+        elif self.check_win_state_board(state) == player:
+            return 1000
+        elif self.check_win_state_board(state) != 0:
+            return -1000
+        
+        v = float('inf')
+        for s in self.possible_state(state, player):
+            v = min(v, self.max_value(s, depth + 1, player, alpha, beta))
+            if v <= alpha:
+                return v
+            beta = min(beta, v)
+        return v
+
+    def max_value(self, state, depth, player, alpha, beta):
+        if depth == MAX_DEPTH:
+            return self.objective_func_board(state, player)
+        elif self.check_win_state_board(state) == player:
+            return 1000
+        elif self.check_win_state_board(state) != 0:
+            return -1000
+
+        v = float('-inf')
+        for s in self.possible_state(state, player):
+            v = max(v, self.min_value(s, depth + 1, player, alpha, beta))
+            if v >= beta:
+                return v
+            alpha = max(alpha, v)
+        return v
 
     # mengembalikan list of state dari semua state yang mungkin dari suatu posisi
     def possible_state(self, state, player):
@@ -281,32 +314,6 @@ class Halma:
                 if (state[i][j] == player):
                     all_state += self.generate_all_move(state, (i,j))
         return all_state
-
-    def min_value(self, state, depth, player):
-        if depth == MAX_DEPTH:
-            return self.objective_func_board(state, player)
-        elif self.check_win_state_board(state) == player:
-            return 1000
-        elif self.check_win_state_board(state) != 0:
-            return -1000
-        
-        v = float('inf')
-        for s in self.possible_state(state, player):
-            v = min(v, self.max_value(s, depth + 1, player))
-        return v
-
-    def max_value(self, state, depth, player):
-        if depth == MAX_DEPTH:
-            return self.objective_func_board(state, player)
-        elif self.check_win_state_board(state) == player:
-            return 1000
-        elif self.check_win_state_board(state) != 0:
-            return -1000
-
-        v = float('-inf')
-        for s in self.possible_state(state, player):
-            v = max(v, self.min_value(s, depth + 1, player))
-        return v
 
     # check win state dari suatu board
     def check_win_state_board(self, state):
@@ -418,13 +425,13 @@ if __name__ == "__main__":
     # b.board_state[3][7] = 2
     # print_board(b.minimax_decision(1))
     
-    halma = Halma(10)
+    halma = Halma(8)
     i = 1
     while (not halma.check_win_state_board(halma.board_state)):
         print("="*8, "turn", i, "="*8)
         print()
-        halma.minimax_decision(2)
         print_board(halma.minimax_decision(1))
+        halma.minimax_decision(2)
         i+=1
         print()
     e = time.time()
