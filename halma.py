@@ -1,8 +1,9 @@
 # import sys 
 # sys.setrecursionlimit(1000) 
 import random
+import time
 
-MAX_DEPTH = 3
+MAX_DEPTH = 1
 class Halma:
     def __init__(self, size):
         self.bSize = size
@@ -208,10 +209,9 @@ class Halma:
     # mengembalikan keputusan terbaik dari suatu state dan player tertentu 
     def minimax_decision(self, player):
         generated_state = self.possible_state(self.board_state, player)
-        for state in generated_state:
-            print_board(state)
-            print("*"*90)
-        print("ok")
+        # for state in generated_state:
+        #     print_board(state)
+        #     print("*"*90)
         best_state_idx = 0
         max_obj_value = float('-inf')
         for i, state in enumerate(generated_state):
@@ -337,33 +337,34 @@ if __name__ == "__main__":
     # for el in res:
     #     print("="*10)
     #     print_board(el)
-
-    b = Halma(8)
-    b.print_board()
-    print("="*90)
-    # res = b.possible_state(b.board_state, 1)
-    # for el in res:
-    #     print("="*10)
-    #     print_board(el)
-    print_board(b.minimax_decision(1))
-    print("="*90)
-    b.board_state[7][7] = 0
-    b.board_state[5][5] = 2
-    print_board(b.minimax_decision(1))
-    print("="*90)
-    b.board_state[7][4] = 0
-    b.board_state[7][3] = 2
-    print_board(b.minimax_decision(1))
-    print("="*90)
-    b.board_state[4][7] = 0
-    b.board_state[3][7] = 2
-    print_board(b.minimax_decision(1))
-    # print(a.board_state[1][7])
-    # ev = a.eval_board(0)
-    # for e in ev:
-    #     print(e)
-    # # a.board_state[15][15] = 1
-    # print(a.objective_func(0,(0,0)))
-    # print("Max : " + str(a.max_func(1, 1, (0,0))))
-    # print("Min : " + str(a.min_func(1, 1, (0,0))))
-    # print(a.copy_board([[1,2,3],[4,5,6],[7,8,9]]))
+    s = time.time()
+    
+    #====TEST=====#
+    
+    # b = Halma(8)
+    # b.print_board()
+    # print("="*90)
+    # print_board(b.minimax_decision(1))
+    # print("="*90)
+    # b.board_state[7][7] = 0
+    # b.board_state[5][5] = 2
+    # print_board(b.minimax_decision(1))
+    # print("="*90)
+    # b.board_state[7][4] = 0
+    # b.board_state[7][3] = 2
+    # print_board(b.minimax_decision(1))
+    # print("="*90)
+    # b.board_state[4][7] = 0
+    # b.board_state[3][7] = 2
+    # print_board(b.minimax_decision(1))
+    
+    halma = Halma(8)
+    i = 1
+    while (not halma.check_win_state(0) or not halma.check_win_state(1)):
+        print("="*8, "turn", i, "="*8)
+        print_board(halma.minimax_decision(1))
+        print_board(halma.minimax_decision(2))
+        i+=1
+        print()
+    e = time.time()
+    print("Waktu yang dibutuhkan : ", e-s)
