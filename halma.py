@@ -3,7 +3,7 @@
 import random
 import time
 
-MAX_DEPTH = 1
+MAX_DEPTH = 2
 class Halma:
     def __init__(self, size):
         self.bSize = size
@@ -126,7 +126,25 @@ class Halma:
         # 3 5 8         9 6
         # 6 9         8 5 3
         # 10        7 4 2 1
-        
+        # value = float('inf')
+        # for n in range(self.bSize//2):
+        #     for m in range(n+1):
+        #         if player == 2:
+        #             pos_i = m
+        #             pos_j = n-m
+        #         else: # player = 1
+        #             pos_i = self.bSize-m-1
+        #             pos_j = self.bSize-n+m-1
+        #         if state[pos_i][pos_j] != player:
+        #             # kalau isinya bukan pion dari player maka return
+        #             # print(self.calculate_distance(position, (pos_i, pos_j)))
+        #             value = min(value, self.calculate_distance(position, (pos_i, pos_j)))
+        # return value
+        # if player == 2:
+        #     return self.calculate_distance(position, (0,0))
+        # else:
+        #     return self.calculate_distance(position, (self.bSize-1, self.bSize-1))
+        value = 0
         for n in range(self.bSize//2):
             for m in range(n+1):
                 if player == 2:
@@ -135,10 +153,9 @@ class Halma:
                 else: # player = 1
                     pos_i = self.bSize-m-1
                     pos_j = self.bSize-n+m-1
-                if state[pos_i][pos_j] != player:
-                    # kalau isinya bukan pion dari player maka return
-                    # print(self.calculate_distance(position, (pos_i, pos_j)))
-                    return self.calculate_distance(position, (pos_i, pos_j))
+                if state[pos_i][pos_j] == player:
+                    value -= 1
+        return value
 
     def eval_board(self, turn):
         map_obj = []
@@ -212,17 +229,21 @@ class Halma:
         # for state in generated_state:
         #     print_board(state)
         #     print("*"*90)
-        best_state_idx = 0
+        best_state_idx = []
         max_obj_value = float('-inf')
         for i, state in enumerate(generated_state):
             # print("obj value :", self.min_value(state,1, player))
             temp_obj_value = self.min_value(state, 1, player)
             if  temp_obj_value > max_obj_value :
                 max_obj_value = temp_obj_value
-                best_state_idx = i
+                best_state_idx = [i]
+            elif temp_obj_value == max_obj_value:
+                best_state_idx.append(i)
         # return max_obj_value
-        self.board_state = generated_state[best_state_idx]
-        return generated_state[best_state_idx] # harusnya ini yang dipakai
+        random.shuffle(best_state_idx)
+        self.board_state = generated_state[best_state_idx[0]]
+        print(best_state_idx)
+        return generated_state[best_state_idx[0]] # harusnya ini yang dipakai
 
     # mengembalikan list of state dari semua state yang mungkin dari suatu posisi
     def possible_state(self, state, player):
@@ -237,8 +258,12 @@ class Halma:
         return all_state
 
     def min_value(self, state, depth, player):
-        if depth == MAX_DEPTH or self.check_win_state_board(state, player):
+        if depth == MAX_DEPTH:
             return self.objective_func_board(state, player)
+        elif self.check_win_state_board(state) == player:
+            return 1000
+        elif self.check_win_state_board(state) != 0:
+            return -1000
         
         v = float('inf')
         for s in self.possible_state(state, player):
@@ -246,8 +271,12 @@ class Halma:
         return v
 
     def max_value(self, state, depth, player):
-        if depth == MAX_DEPTH or self.check_win_state_board(state, player):
+        if depth == MAX_DEPTH:
             return self.objective_func_board(state, player)
+        elif self.check_win_state_board(state) == player:
+            return 1000
+        elif self.check_win_state_board(state) != 0:
+            return -1000
 
         v = float('-inf')
         for s in self.possible_state(state, player):
@@ -255,23 +284,29 @@ class Halma:
         return v
 
     # check win state dari suatu board
-    def check_win_state_board(self, state, player):
-        assert player == 1 or player == 2
-        pion = []
+    def check_win_state_board(self, state):
+        pion1 = []
+        pion2 = []
         for i in range(self.bSize):
             for j in range(self.bSize):
-                if state[i][j] == player:
-                    pion.append((i,j))
-        if player == 1 :
-            for x,y in pion :
-                if x + y < self.bSize*3/2 - 1:
-                    return False
-            return True
-        else :
-            for x,y in pion :
-                if x + y > self.bSize/2 - 1 :
-                    return False
-            return True
+                if state[i][j] == 1:
+                    pion1.append((i,j))
+                else:
+                    pion2.append((i,j))
+        win1 = True
+        win2 = True
+        for x,y in pion1 :
+            if x + y < self.bSize*3/2 - 1:
+                win1 = False
+        for x,y in pion2 :
+            if x + y > self.bSize/2 - 1 :
+                win2 = False
+        if win1:
+            return 1
+        elif win2:
+            return 2
+        else:
+            return 0
 
     # return value objective function dari suatu board
     # player 
@@ -360,10 +395,11 @@ if __name__ == "__main__":
     
     halma = Halma(8)
     i = 1
-    while (not halma.check_win_state(0) or not halma.check_win_state(1)):
+    while (not halma.check_win_state_board(halma.board_state)):
         print("="*8, "turn", i, "="*8)
+        print()
+        halma.minimax_decision(2)
         print_board(halma.minimax_decision(1))
-        print_board(halma.minimax_decision(2))
         i+=1
         print()
     e = time.time()
