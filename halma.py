@@ -11,6 +11,22 @@ class Halma:
         self.pos_A = []
         self.pos_B = []
         self.init_board()
+        self.init_board_val()
+
+    def init_board_val(self):
+        self.board_val1 = [[0 for i in range(self.bSize)] for j in range(self.bSize)]
+        self.board_val2 = [[0 for i in range(self.bSize)] for j in range(self.bSize)]
+
+        for i in range(self.bSize):
+            for j in range(self.bSize):
+                if i+j < self.bSize // 2:
+                    self.board_val2[i][j] = self.bSize - i - j - 10
+                else:
+                    self.board_val2[i][j] = i + j
+                if i+j >= self.bSize * 3 // 2 - 1:
+                    self.board_val1[i][j] = self.bSize - i - j - 10
+                else:
+                    self.board_val1[i][j] = self.bSize - i - j
 
     def init_board(self):
         for i in range(self.bSize):
@@ -126,6 +142,7 @@ class Halma:
         # 3 5 8         9 6
         # 6 9         8 5 3
         # 10        7 4 2 1
+        ### Alt 1
         # value = float('inf')
         # for n in range(self.bSize//2):
         #     for m in range(n+1):
@@ -140,22 +157,30 @@ class Halma:
         #             # print(self.calculate_distance(position, (pos_i, pos_j)))
         #             value = min(value, self.calculate_distance(position, (pos_i, pos_j)))
         # return value
+        ### Alt 2
         # if player == 2:
         #     return self.calculate_distance(position, (0,0))
         # else:
         #     return self.calculate_distance(position, (self.bSize-1, self.bSize-1))
-        value = 0
-        for n in range(self.bSize//2):
-            for m in range(n+1):
-                if player == 2:
-                    pos_i = m
-                    pos_j = n-m
-                else: # player = 1
-                    pos_i = self.bSize-m-1
-                    pos_j = self.bSize-n+m-1
-                if state[pos_i][pos_j] == player:
-                    value -= 1
-        return value
+        ### Alt 3
+        # value = 0
+        # for n in range(self.bSize//2):
+        #     for m in range(n+1):
+        #         if player == 2:
+        #             pos_i = m
+        #             pos_j = n-m
+        #         else: # player = 1
+        #             pos_i = self.bSize-m-1
+        #             pos_j = self.bSize-n+m-1
+        #         if state[pos_i][pos_j] == player:
+        #             value -= 1
+        # return value
+        ### Alt 4
+        if player == 1:
+            return self.board_val1[position[0]][position[1]]
+        else:
+            return self.board_val2[position[0]][position[1]]
+
 
     def eval_board(self, turn):
         map_obj = []
@@ -393,7 +418,7 @@ if __name__ == "__main__":
     # b.board_state[3][7] = 2
     # print_board(b.minimax_decision(1))
     
-    halma = Halma(8)
+    halma = Halma(10)
     i = 1
     while (not halma.check_win_state_board(halma.board_state)):
         print("="*8, "turn", i, "="*8)
