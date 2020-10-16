@@ -36,7 +36,7 @@ class Halma:
                     self.board_state[i][j] = 1
                     self.pos_A.append((i,j))
 
-                if i >= self.bSize/2 and j >= self.bSize*3/2 + - 1 - i:
+                if i >= self.bSize/2 and j >= self.bSize*3/2 - 1 - i:
                     self.board_state[i][j] = 2
                     self.pos_B.append((i,j))
 

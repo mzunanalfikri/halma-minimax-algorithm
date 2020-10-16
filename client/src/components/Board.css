@@ -1,0 +1,71 @@
+.grid-8{
+    display:grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.grid-10{
+    display:grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.grid-16{
+    display:grid;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+}
+
+.cell-board{
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 1px solid gray;
+}
+
+.green{
+    background-color: lime;
+}
+
+.green:hover{
+    background-color: rgb(38, 187, 38);
+}
+
+.green.cell-clicked{
+    background-color: green;
+}
+
+.red{
+    background-color: red;
+}
+
+.red:hover{
+    background-color: rgb(177, 19, 50);
+}
+
+.red.cell-clicked{
+    background-color: rgb(102, 3, 3);
+}
+
+.blank{
+    background-color: white;
+    color: #282c34;
+}
+
+.blank:hover{
+    background-color: rgb(221, 221, 221);
+}
+
+.blank.cell-clicked{
+    background-color: rgb(184, 184, 184);
+}
+
+
+.blank.player-A{
+    color: lightgreen;
+}
+
+.blank.player-B{
+    color: red;
+}
+
+.cell-board:hover{
+    cursor: pointer;
+}
