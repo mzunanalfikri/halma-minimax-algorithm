@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DisplayBoard from './DisplayBoard';
 
 const Halma = () => {
     const [bSize, setBSize] = useState(0);
     const [board, setBoard] = useState([]);
+    // const [seconds, setSeconds] = useState(10);
+
+    // useEffect(() => {
+    //     tick();
+    // });
+
+    // function tick() {
+    //     if (seconds > 0) {
+    //         setTimeout(() => setSeconds(seconds - 1), 1000);
+    //     } else {
+    //         setSeconds('TIME'S UP!');
+    //     }
+    // }
 
     const isInBaseA = (i, j, size) => {
         return i<size/2 && j<size/2 - i
@@ -37,6 +50,7 @@ const Halma = () => {
         const size = e.target.value;
         setBSize(size);
         
+        setBoard([]);
         const arr = initBoard(size);
         setBoard(arr);
     }
@@ -62,6 +76,9 @@ const Halma = () => {
                 isInBaseB={isInBaseB}
                 />
             )}
+            {/* <div>
+                {seconds}
+            </div> */}
         </div>
     );
 }
