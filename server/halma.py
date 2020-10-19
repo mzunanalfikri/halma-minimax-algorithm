@@ -303,7 +303,7 @@ class Halma:
     def local_search(self, init_state, player):
         arrstate = self.possible_state(init_state, player)
         # Ambil 25 persen dar total generated state
-        NELM = math.floor(len(arrstate)/4)
+        NELM = math.floor(len(arrstate)*0.25)
         # index randomizer
         x=random.sample(range(len(arrstate)), NELM)
         arr_local = []
