@@ -94,3 +94,18 @@
 .btn:hover{
     background-color: lightblue;
 }
+
+.row {
+    padding: 50px 300px;
+}
+.column {
+    float: left;
+    width: 50%;
+}
+  
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+  

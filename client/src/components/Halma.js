@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DisplayBoard from './DisplayBoard';
+import Players from './Players'
 
 const Halma = () => {
     const [bSize, setBSize] = useState(0);
@@ -59,6 +60,10 @@ const Halma = () => {
         <div>
             <div>
                 Halma
+            </div>
+            <Players />
+            <div>
+                select board size
             </div>
             <select value={bSize} onChange={handleSelectChange}>
                 <option value="0"></option>
