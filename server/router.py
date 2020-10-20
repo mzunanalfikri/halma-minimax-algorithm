@@ -19,13 +19,32 @@ response :
     "possible-move" : [[x,y], [x1,y1]]
 }
 '''
-@app.route('/possible-one-move')
-def possible_one_move():
+@app.route('/possible-one-move-step')
+def possible_one_move_step():
     state = request.json['state']
     position = request.json['position']
     possible_move = []
     halma = Halma(len(state), float('inf'))
     possible_move += halma.valid_actions_step(state, position)
+    return jsonify(possible_move = possible_move)
+
+'''
+request - body 
+{
+    "state" : array state game,
+    "positon" : [x,y]
+}
+response :
+{
+    "possible-move" : [[x,y], [x1,y1]]
+}
+'''
+@app.route('/possible-one-move-jump')
+def possible_one_move_jump():
+    state = request.json['state']
+    position = request.json['position']
+    possible_move = []
+    halma = Halma(len(state), float('inf'))
     possible_move += halma.valid_actions_jump(state, position)
     return jsonify(possible_move = possible_move)
 
