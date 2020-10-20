@@ -1,6 +1,9 @@
 import random
 import time
 import math
+import sys
+
+sys.setrecursionlimit(10000)
 
 MAX_DEPTH = 2
 class Halma:
@@ -321,21 +324,21 @@ class Halma:
 
         arr_obj_local.sort(reverse=True)
 
-        return arr_obj_local
+        return randomed_state
     
     def local_search_decision(self, init_state, randomed_state, player):
-        decided_state = [[0*self.bSize] for i in range(self.bSize)]
+        decided_state = [[0 for i in range(self.bSize)] for j in range(self.bSize)]
         init_obj = self.objective_func_board(init_state, player)
         rand_obj = self.objective_func_board(randomed_state, player)
 
-        print("Obj val init_state: " + str(init_obj))
-        print("Obj val randomed_state: " + str(rand_obj))
+        # print("Obj val init_state: " + str(init_obj))
+        # print("Obj val randomed_state: " + str(rand_obj))
 
         if not self.check_win_state_board(init_state):
             if(rand_obj > init_obj):
                 decided_state = randomed_state
             else:
-                self.local_search_decision(init_state, self.local_search(init_state, player), player)
+                decided_state = self.local_search_decision(init_state, self.local_search(init_state, player), player)
         return decided_state
 
 
@@ -383,15 +386,16 @@ if __name__ == "__main__":
     statearridx = halma.local_search(bstate,1)
     print(statearridx)
     # deciszon = halma.local_search_decision(bstate,statearridx,1)
-    # i=1
-    # while (not halma.check_win_state_board(halma.board_state)):
-    #     print("="*8, "turn", i, "="*8)
-    #     print()
-    #     print_board(halma.local_search_decision(bstate,statearridx,1))
-    #     halma.local_search_decision(bstate,statearridx,2)
-    #     halma.minimax_decision(2)
-    #     i+=1
-    #     print()
+    
+    i=1
+    while (not halma.check_win_state_board(bstate)):
+        print("="*8, "turn", i, "="*8)
+        print()
+        bstate = halma.local_search_decision(bstate, halma.local_search(bstate, i%2+1), i%2+1)
+        print_board(bstate)
+        # halma.minimax_decision(2)
+        i+=1
+        print()
     
     # print_state(decision)
     # print_state(statearridx)
