@@ -96,30 +96,30 @@ class Halma:
         
         return new_board
     
-    def generate_valid_state(self, board, player):
-        if player == 1 :
-            listPos = self.pos_A
-        elif player == 2 :
-            listPos = self.pos_B
-        else :
-            print("Tidak valid")
-            return
+    # def generate_valid_state(self, board, player):
+    #     if player == 1 :
+    #         listPos = self.pos_A
+    #     elif player == 2 :
+    #         listPos = self.pos_B
+    #     else :
+    #         print("Tidak valid")
+    #         return
         
-        listOfValidState = []
-        for pos in listPos :
-            listOfValidActions = self.valid_action(board, pos)
+    #     listOfValidState = []
+    #     for pos in listPos :
+    #         listOfValidActions = self.valid_action(board, pos)
 
             
-            for action in listOfValidActions :
-                state = self.copy_board(board)
+    #         for action in listOfValidActions :
+    #             state = self.copy_board(board)
                 
-                state[pos[0]][pos[1]] = 0
-                state[action[1][0]][action[1][1]] = player
+    #             state[pos[0]][pos[1]] = 0
+    #             state[action[1][0]][action[1][1]] = player
 
-                # (state board, posisi awal perpindahan, posisi akhir perpindahan, boolean apakah habis lompat atau ngga)
-                listOfValidState.append((state, pos, action))
+    #             # (state board, posisi awal perpindahan, posisi akhir perpindahan, boolean apakah habis lompat atau ngga)
+    #             listOfValidState.append((state, pos, action))
         
-        return listOfValidState
+    #     return listOfValidState
 
 
     def check_win_state(self, turn) :
@@ -205,7 +205,7 @@ class Halma:
             return self.objective_func_board(state, player)
         elif self.check_win_state_board(state) == player:
             return 1000
-        elif self.s(state) != 0:
+        elif self.check_win_state_board(state) != 0:
             return -1000
 
         v = float('-inf')
