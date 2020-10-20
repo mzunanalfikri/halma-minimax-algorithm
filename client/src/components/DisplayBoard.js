@@ -1,15 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import {generateActionBasic, generateActionJump} from './HalmaService';
+import {generateActionBasic, generateActionJump, checkWinState} from './HalmaService';
 import './Board.css';
 
-const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB}) => {
+const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB, win, setWin}) => {
     const [hasJump, setHasJump] = useState(false);
+    const [hasStep, setHasStep] = useState(false);
+    const [currPos, setCurrPos] = useState({
+        i: -1,
+        j: -1
+    });
     const [clicked, setClicked] = useState({
         i: -1,
         j: -1
     });
 
     const [canMove, setCanMove] = useState([]);
+
+    useEffect(() => {
+        const winCondition = checkWinState(board, size);
+        console.log(winCondition);
+        if(winCondition !== 0){
+            setWin(winCondition);
+        }
+    }, [board]);
 
     useEffect( () => {
         const getMinimax = async () => {
@@ -78,6 +91,9 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
     // TODO : nanti ganti pake yang dari backend
     // bikin lagi cuma buat testing
     const generateValidAction = (x, y) => {
+        if (hasStep) {
+            return [];
+        }
         if(hasJump){
             return generateActionJump(x, y, board, size);
         }else{
@@ -87,27 +103,54 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
     }
 
     const handleClick = (i,j) => {
+        // console.log(currPos.i);
+        // console.log(currPos.j);
+        // console.log("clicked");
+        // console.log(clicked.i);
+        // console.log(clicked.j);
         if(clicked.i === i && clicked.j === j){ //cancel click
             setClicked({
                 i: -1,
                 j: -1
             });
+            // setCurrPos({
+            //     i: -1,
+            //     j: -1
+            // });
             setCanMove([]);
         }else{
             if(clicked.i === -1 && clicked.j === -1){ //not clicked yet
                 if(board[i][j] === turn%2 + 1){ // click pion player sesuai turn
-                    setClicked({
-                        i,
-                        j
-                    });
+                    if (((i === currPos.i && j === currPos.j) && hasJump) || !hasJump) {
+                        setClicked({
+                            i,
+                            j
+                        });
+                        setCanMove(generateValidAction(i, j));
+                    }
     
-                    setCanMove(generateValidAction(i, j));
                 }
             }else{ // already clicked
-
+                setCurrPos({
+                    i,
+                    j
+                });
                 // TODO : cek valid move
                 var isCanMove = checkCanMove(i, j);
                 if(isCanMove.found){
+                    for(var a=clicked.i-1; a<clicked.i+2; a++){
+                        if(a>=0 && a<size){
+                            for(var b=clicked.j-1; b<clicked.j+2; b++){
+                                if(b>=0 && b<size){
+                                    if(board[a][b] === 0){
+                                        if (i === a && j === b) {
+                                            setHasStep(true);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     handleMove({
                         i: clicked.i,
                         j: clicked.j
@@ -115,11 +158,10 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
                         i,
                         j
                     });
+                    
                     setCanMove([]);
                     if(isCanMove.hasJump){ 
                         setHasJump(true);
-                    }else{
-                        changeTurn();
                     }
                 }
             }
@@ -153,7 +195,23 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
         });
     }
 
-    const changeTurn = () => setTurn(turn => turn + 1);
+    const changeTurn = () => {
+        console.log(win);
+        if(win === 0){
+            setTurn(turn => turn + 1);
+            setHasJump(false);
+            setHasStep(false);
+            setCurrPos({
+                i: -1,
+                j: -1
+            });
+            setClicked({
+                i: -1,
+                j: -1
+            });
+        }
+        
+    };
 
     const boardComponent = board.map((row, i) => {
         const cells = row.map((cell, j) => {
@@ -195,7 +253,9 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
     return ( 
         <div className="board-container">
             <div>
-                {turn%2 === 0 ? "Player A's Turn" : "Player B's Turn"}
+                {(turn%2 === 0 && win === 0) ? "Player A's Turn" : "Player B's Turn"}
+                {(win === 1) ? "Player A Win" : 
+                (win === 2) ? "Player B Win" : ""}
             </div>
             {boardComponent}
             <button onClick={changeTurn} className="btn">
