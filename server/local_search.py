@@ -138,7 +138,6 @@ class Halma:
         else:
             return self.board_val2[position[0]][position[1]]
 
-
     def eval_board(self, turn):
         map_obj = []
         if turn == 0:
@@ -174,7 +173,6 @@ class Halma:
         self.board_state = generated_state[best_state_idx[0]]
         print(best_state_idx)
         return generated_state[best_state_idx[0]] # harusnya ini yang dipakai
-
 
     def min_value(self, state, depth, player, alpha, beta):
         if depth == MAX_DEPTH:
@@ -304,20 +302,26 @@ class Halma:
         arrstate = self.possible_state(init_state, player)
         # Ambil 25 persen dar total generated state
         NELM = 0
-        if(len(arrstate) < 4):
+        if(len(arrstate) < 2):
             NELM = math.ceil(len(arrstate)/2)
         else:
-            NELM = math.floor(len(arrstate)*0.25)
+            NELM = math.floor(len(arrstate)*0.5)
         # index randomizer
-        x=random.sample(range(len(arrstate)), NELM)
+        x = random.sample(range(len(arrstate)), NELM)
         arr_local = []
         for idx in x:
             arr_local.append(arrstate[idx])
 
+        arr_obj_local = []
+        for state in arr_local:
+            arr_obj_local.append(self.objective_func_board(state,player))
+
         randidx = random.sample(range(len(arr_local)), 1)
         randomed_state = arr_local[randidx[0]]
 
-        return randomed_state
+        arr_obj_local.sort(reverse=True)
+
+        return arr_obj_local
     
     def local_search_decision(self, init_state, randomed_state, player):
         decided_state = [[0*self.bSize] for i in range(self.bSize)]
@@ -333,6 +337,8 @@ class Halma:
             else:
                 self.local_search_decision(init_state, self.local_search(init_state, player), player)
         return decided_state
+
+
 
 if __name__ == "__main__":
     # i = 1
@@ -375,148 +381,17 @@ if __name__ == "__main__":
     postate = halma.possible_state(bstate, 1)
 
     statearridx = halma.local_search(bstate,1)
-    decision = halma.local_search_decision(bstate,statearridx,1)
-    i=1
-    while (not halma.check_win_state_board(halma.board_state)):
-        print("="*8, "turn", i, "="*8)
-        print()
-        print_board(halma.local_search_decision(bstate,statearridx,1))
-        halma.local_search_decision(bstate,statearridx,2)
-        halma.minimax_decision(2)
-        i+=1
-        print()
+    print(statearridx)
+    # deciszon = halma.local_search_decision(bstate,statearridx,1)
+    # i=1
+    # while (not halma.check_win_state_board(halma.board_state)):
+    #     print("="*8, "turn", i, "="*8)
+    #     print()
+    #     print_board(halma.local_search_decision(bstate,statearridx,1))
+    #     halma.local_search_decision(bstate,statearridx,2)
+    #     halma.minimax_decision(2)
+    #     i+=1
+    #     print()
     
-    print_state(decision)
-    print_state(statearridx)
-
-                    
-    # a = Halma(8)
-    # a.board_state[3][0] = 0 
-    # a.board_state[3][1] = 1 
-    # a.print_board()
-    # res = (a.generate_all_move(a.board_state, (2,0) ))
-    # for el in res:
-    #     print("="*10)
-    #     print_board(el)
-    
-    #====TEST=====#
-    
-    # b = Halma(8)
-    # b.print_board()
-    # print("="*90)
-    # print_board(b.minimax_decision(1))
-    # print("="*90)
-    # b.board_state[7][7] = 0
-    # b.board_state[5][5] = 2
-    # print_board(b.minimax_decision(1))
-    # print("="*90)
-    # b.board_state[7][4] = 0
-    # b.board_state[7][3] = 2
-    # print_board(b.minimax_decision(1))
-    # print("="*90)
-    # b.board_state[4][7] = 0
-    # b.board_state[3][7] = 2
-    # print_board(b.minimax_decision(1))
-    
-
-
-
-# Objective func alt
-        # player 1, player 2
-        # ilustrasi prioritas:
-        # player 2  player 1
-        # 1 2 4 7        10
-        # 3 5 8         9 6
-        # 6 9         8 5 3
-        # 10        7 4 2 1
-        ### Alt 1
-        # value = float('inf')
-        # for n in range(self.bSize//2):
-        #     for m in range(n+1):
-        #         if player == 2:
-        #             pos_i = m
-        #             pos_j = n-m
-        #         else: # player = 1
-        #             pos_i = self.bSize-m-1
-        #             pos_j = self.bSize-n+m-1
-        #         if state[pos_i][pos_j] != player:
-        #             # kalau isinya bukan pion dari player maka return
-        #             # print(self.calculate_distance(position, (pos_i, pos_j)))
-        #             value = min(value, self.calculate_distance(position, (pos_i, pos_j)))
-        # return value
-        ### Alt 2
-        # if player == 2:
-        #     return self.calculate_distance(position, (0,0))
-        # else:
-        #     return self.calculate_distance(position, (self.bSize-1, self.bSize-1))
-        ### Alt 3
-        # value = 0
-        # for n in range(self.bSize//2):
-        #     for m in range(n+1):
-        #         if player == 2:
-        #             pos_i = m
-        #             pos_j = n-m
-        #         else: # player = 1
-        #             pos_i = self.bSize-m-1
-        #             pos_j = self.bSize-n+m-1
-        #         if state[pos_i][pos_j] == player:
-        #             value -= 1
-        # return value
-        ### Alt 4
-
-    # bad max min
-    
-    # def max_func(self, depth, player, pos):
-    #     if player == 0:
-    #         turn = 1
-    #     else:
-    #         turn = 0
-
-    #     if depth == MAX_DEPTH or self.check_win_state(player):
-    #         return self.objective_func(player, pos)
-    #     maxval = float('-inf')
-    #     # movetaken = None
-        
-    #     if self.check_win_state(player):
-    #         return "Player " + str(player) + "Win"
-    #     else:
-    #         for neighbor in self.pos_A:
-    #             validactions = self.valid_action(neighbor)
-    #             for act in validactions:
-    #                 # print(act)
-    #                 maxval = max(maxval, self.min_func(depth+1, player, act[1]))
-    #                 # print(maxval)
-    #                 # tmp = self.objective_func(turn, act[1])
-    #                 # # print(tmp)
-    #                 # if(tmp > maxval):
-    #                 #     maxzval = tmp
-    #         # print("maxval "+str(maxval))
-    #         return maxval
-
-    # def min_func(self, depth, player, pos):
-    #     if player == 0:
-    #         turn = 1
-    #     else:
-    #         turn = 0
-    
-    #     if depth == MAX_DEPTH or self.check_win_state(player):
-    #         # print(pos)
-    #         return self.objective_func(turn, pos)
-    #     minval = float('inf')
-    #     # movetaken = None
-        
-    #     if self.check_win_state(player):
-    #         return "Player " + str(player) + "Win"
-    #     else:
-    #         for neighbor in self.pos_A:
-    #             validactions = self.valid_action(neighbor)
-    #             for act in validactions:
-    #                 # print(act)
-    #                 minval = min(minval, self.max_func(depth+1, player, act[1]))
-    #                 # print(minval)
-    #                 # tmp = self.objective_func(turn, act[1])
-    #                 # # print(tmp)
-    #                 # if(tmp < minval):   
-    #                 #     minval = tmp
-    #         # print("minval "+str(minval))
-    #         return minval
+    # print_state(decision)
+    # print_state(statearridx)
