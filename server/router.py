@@ -48,7 +48,17 @@ def minimax():
     time_limit = request.json['time-limit']
     halma = Halma(len(state), time_limit)
     halma.board_state = state
-    best_decision = halma.minimax_decision(player)
+    best_decision = halma.minimax_decision(player,False)
+    return jsonify(next_state = best_decision)
+
+@app.route('/minimax-local')
+def minimax_local():
+    state = request.json['state']
+    player = request.json['player']
+    time_limit = request.json['time-limit']
+    halma = Halma(len(state), time_limit)
+    halma.board_state = state
+    best_decision = halma.minimax_decision(player,True)
     return jsonify(next_state = best_decision)
 
 if __name__ == "__main__":
