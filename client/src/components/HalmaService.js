@@ -73,12 +73,12 @@ export function checkWinState(board, size){
     for(var i=0; i<size; i++){
         for(var j=0;j<size;j++){
             if(board[i][j] === 1){
-                pion1.append({
+                pion1.push({
                     x: i,
                     y: j
                 });
             }else if(board[i][j] === 2){
-                pion2.append({
+                pion2.push({
                     x: i,
                     y: j
                 });

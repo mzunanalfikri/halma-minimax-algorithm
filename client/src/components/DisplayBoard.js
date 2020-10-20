@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {generateActionBasic, generateActionJump} from './HalmaService';
 import './Board.css';
 
-const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB}) => {
+const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB, win}) => {
     const [hasJump, setHasJump] = useState(false);
     const [clicked, setClicked] = useState({
         i: -1,
@@ -153,7 +153,12 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
         });
     }
 
-    const changeTurn = () => setTurn(turn => turn + 1);
+    const changeTurn = () => {
+        console.log(win);
+        if(win === 0){
+            setTurn(turn => turn + 1);
+        }
+    };
 
     const boardComponent = board.map((row, i) => {
         const cells = row.map((cell, j) => {
@@ -195,10 +200,12 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
     return ( 
         <div className="board-container">
             <div>
-                {turn%2 === 0 ? "Player A's Turn" : "Player B's Turn"}
+                {(turn%2 === 0 && win === 0) ? "Player A's Turn" : "Player B's Turn"}
+                {(win === 1) ? "Player A Win" : 
+                (win === 2) ? "Player B Win" : ""}
             </div>
             {boardComponent}
-            <button onClick={changeTurn} className="btn">
+            <button onClick={changeTurn} className="btn" disabled={win !== 0}>
                 <span>
                     Next
                 </span>

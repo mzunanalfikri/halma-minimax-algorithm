@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import DisplayBoard from './DisplayBoard';
+import { checkWinState } from './HalmaService';
 import Players from './Players'
 
 const Halma = () => {
+    const [win, setWin] = useState(0);
     const [P1, setP1] = useState("None");
     const [P2, setP2] = useState("None");
     const [turn, setTurn] = useState(0);
@@ -24,6 +26,13 @@ const Halma = () => {
     //         setSeconds('TIME'S UP!');
     //     }
     // }
+    useEffect(() => {
+        const winCondition = checkWinState(board, bSize);
+        console.log(winCondition);
+        if(winCondition !== 0){
+            setWin(winCondition);
+        }
+    }, [board]);
 
     const isInBaseA = (i, j, size) => {
         return i<size/2 && j<size/2 - i
@@ -106,11 +115,9 @@ const Halma = () => {
                 setBoard={setBoard}
                 isInBaseA={isInBaseA}
                 isInBaseB={isInBaseB}
+                win={win}
                 />
             )}
-            {/* <div>
-                {seconds}
-            </div> */}
         </div>
     );
 }
