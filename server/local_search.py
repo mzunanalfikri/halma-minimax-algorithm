@@ -326,19 +326,23 @@ class Halma:
 
         return randomed_state
     
-    def local_search_decision(self, init_state, randomed_state, player):
+    def local_search_decision(self, init_state, randomed_state, player, s):
+        
         decided_state = [[0 for i in range(self.bSize)] for j in range(self.bSize)]
         init_obj = self.objective_func_board(init_state, player)
         rand_obj = self.objective_func_board(randomed_state, player)
 
-        # print("Obj val init_state: " + str(init_obj))
-        # print("Obj val randomed_state: " + str(rand_obj))
-
+        print("Obj val init_state: " + str(init_obj))
+        print("Obj val randomed_state: " + str(rand_obj))
+        
         if not self.check_win_state_board(init_state):
-            if(rand_obj > init_obj):
+            if time.time() - s > self.time_limit :
+                return init_state
+            if(rand_obj >= init_obj):
                 decided_state = randomed_state
             else:
-                decided_state = self.local_search_decision(init_state, self.local_search(init_state, player), player)
+                decided_state = self.local_search_decision(init_state, self.local_search(init_state, player), player, s)
+            
         return decided_state
 
 
@@ -352,7 +356,7 @@ if __name__ == "__main__":
     #     halma.minimax_decision(2)
     #     i+=1
     #     print()
-    # e = time.time()v
+    # e = time.time()
     # s = time.time()
     # print("Waktu yang dibutuhkan : ", e-s)
 
@@ -389,9 +393,10 @@ if __name__ == "__main__":
     
     i=1
     while (not halma.check_win_state_board(bstate)):
+        s = time.time()
         print("="*8, "turn", i, "="*8)
         print()
-        bstate = halma.local_search_decision(bstate, halma.local_search(bstate, i%2+1), i%2+1)
+        bstate = halma.local_search_decision(bstate, halma.local_search(bstate, i%2+1), i%2+1,s)
         print_board(bstate)
         # halma.minimax_decision(2)
         i+=1
