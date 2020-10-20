@@ -22,7 +22,7 @@ const Players = ({ P1, setP1, P2, setP2, isStart, setIsStart, handleReset, size 
         <div className="row">
             <div className="column">
                 <div>
-                    Select Player A
+                    Player 1
                 </div>
                 <select value={P1} onChange={handleP1SelectChange}>
                     <option value="None">None</option>
@@ -31,12 +31,12 @@ const Players = ({ P1, setP1, P2, setP2, isStart, setIsStart, handleReset, size 
                     <option value="Minimax with local search">Minimax with local search</option>
                 </select>
                 <div>
-                    Player A: {P1}
+                    Player 1: {P1}
                 </div>
             </div>
             <div className="column">
                 <div>
-                    Select Player B
+                    Player 2
                 </div>
                 <select value={P2} onChange={handleP2SelectChange}>
                     <option value="None">None</option>
@@ -45,7 +45,7 @@ const Players = ({ P1, setP1, P2, setP2, isStart, setIsStart, handleReset, size 
                     <option value="Minimax with local search">Minimax with local search</option>
                 </select>
                 <div>
-                    Player B: {P2}
+                    Player 2: {P2}
                 </div>
             </div>
         </div>

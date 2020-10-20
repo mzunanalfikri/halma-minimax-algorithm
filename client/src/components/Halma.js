@@ -73,10 +73,34 @@ const Halma = () => {
 
     return ( 
         <div>
+            <br></br>
             <div>
                 Halma
             </div>
-            <input type="number" onChange={(e) => setTime(e.target.value)} value={time} />
+            <br></br>
+            <br></br>
+            <div className="row">
+                <div className="column">
+                    <div>
+                        T-Limit
+                    </div>
+                    <input type="number" onChange={(e) => setTime(e.target.value)} value={time} />
+                </div>
+                <div className="column">
+                    <div>
+                        Board Size
+                    </div>
+                    <select value={bSize} onChange={handleSelectChange}>
+                        <option value="0"></option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="16">16</option>
+                    </select>
+                    <div>
+                        {bSize}
+                    </div>
+                </div>
+            </div>
             <Players 
                 P1={P1}
                 setP1={setP1}
@@ -87,18 +111,6 @@ const Halma = () => {
                 size={bSize}
                 handleReset={handleReset}
             />
-            <div>
-                select board size
-            </div>
-            <select value={bSize} onChange={handleSelectChange}>
-                <option value="0"></option>
-                <option value="8">8</option>
-                <option value="10">10</option>
-                <option value="16">16</option>
-            </select>
-            <div>
-                {bSize}
-            </div>
             {(board.length > 0 && isStart) && (
                 <DisplayBoard board={board} size={bSize}
                 P1={P1}

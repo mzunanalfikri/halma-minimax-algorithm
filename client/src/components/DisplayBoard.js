@@ -253,10 +253,10 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
     return ( 
         <div className="board-container">
             <div>
-                {(turn%2 === 0 && win === 0) ? "Player A's Turn" : 
-                (win === 0) ? "Player B's Turn" : ""}
-                {(win === 1) ? "Player A Win" : 
-                (win === 2) ? "Player B Win" : ""}
+                {(turn%2 === 0 && win === 0) ? "Player 1's Turn" : 
+                (win === 0) ? "Player 2's Turn" : ""}
+                {(win === 1) ? "Player 1 Win" : 
+                (win === 2) ? "Player 2 Win" : ""}
             </div>
             {boardComponent}
             <button onClick={changeTurn} className="btn">
