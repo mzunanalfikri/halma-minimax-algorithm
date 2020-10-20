@@ -1,6 +1,9 @@
 import random
 import time
 import math
+import sys
+
+sys.setrecursionlimit(5000)
 
 MAX_DEPTH = 2
 class Halma:
@@ -138,7 +141,6 @@ class Halma:
         else:
             return self.board_val2[position[0]][position[1]]
 
-
     def eval_board(self, turn):
         map_obj = []
         if turn == 0:
@@ -151,9 +153,14 @@ class Halma:
         return map_obj
 
     # mengembalikan keputusan terbaik dari suatu state dan player tertentu 
-    def minimax_decision(self, player):
+    def minimax_decision(self, player, isLocal):
         s = time.time()
-        generated_state = self.possible_state(self.board_state, player)
+        # generated_state = self.possible_state(self.board_state, player)
+        if not isLocal:
+            generated_state = self.possible_state(self.board_state, player)
+        else:
+            generated_state = self.local_search(self.board_state, player)
+
         # for state in generated_state:
         #     print_board(state)
         #     print("*"*90)
@@ -174,7 +181,6 @@ class Halma:
         self.board_state = generated_state[best_state_idx[0]]
         print(best_state_idx)
         return generated_state[best_state_idx[0]] # harusnya ini yang dipakai
-
 
     def min_value(self, state, depth, player, alpha, beta):
         if depth == MAX_DEPTH:
@@ -232,7 +238,7 @@ class Halma:
             for j in range(self.bSize):
                 if state[i][j] == 1:
                     pion1.append((i,j))
-                else:
+                elif state[i][j] == 2: 
                     pion2.append((i,j))
         win1 = True
         win2 = True
@@ -298,55 +304,58 @@ class Halma:
         return res_state
 
     # REVIEW ambil n random successor state dari possible state
-    # REVIEW ambil 1 suksesor random
+    # REVIEW sort n rnadom suksessor
     # REVIEW itung min max, kalo max ambil >, kalo <= dibreak
     def local_search(self, init_state, player):
         arrstate = self.possible_state(init_state, player)
         # Ambil 25 persen dar total generated state
         NELM = 0
-        if(len(arrstate) < 4):
+        if(len(arrstate) < 2):
             NELM = math.ceil(len(arrstate)/2)
         else:
-            NELM = math.floor(len(arrstate)*0.25)
+            NELM = math.floor(len(arrstate)*0.5)
         # index randomizer
-        x=random.sample(range(len(arrstate)), NELM)
+        x = random.sample(range(len(arrstate)), NELM)
         arr_local = []
         for idx in x:
             arr_local.append(arrstate[idx])
 
-        randidx = random.sample(range(len(arr_local)), 1)
-        randomed_state = arr_local[randidx[0]]
+        arr_obj_local = []
+        for state in arr_local:
+            arr_obj_local.append((self.objective_func_board(state,player),state))
 
-        return randomed_state
+
+        randidx = random.sample(range(len(arr_local)), 1)
+        # return alt 1
+        randomed_state = arr_local[randidx[0]]
+        
+        # return alt 2s
+        arr_obj_local.sort(reverse=True)
+        final_local = []
+        for state in arr_obj_local:
+            final_local.append(state[1])
+        return final_local
     
-    def local_search_decision(self, init_state, randomed_state, player):
-        decided_state = [[0*self.bSize] for i in range(self.bSize)]
+    # STOCHASTIC LOCAL SEARCH
+    def local_search_decision(self, init_state, randomed_state, player, s):
+        decided_state = [[0 for i in range(self.bSize)] for j in range(self.bSize)]
         init_obj = self.objective_func_board(init_state, player)
         rand_obj = self.objective_func_board(randomed_state, player)
 
-        print("Obj val init_state: " + str(init_obj))
-        print("Obj val randomed_state: " + str(rand_obj))
-
-        if not self.check_win_state_board(init_state):
-            if(rand_obj > init_obj):
+        print(1)
+        
+        if not self.check_win_state_board(init_state) :
+            if time.time() - s > self.time_limit :
+                return init_state
+            if(rand_obj >= init_obj):
                 decided_state = randomed_state
             else:
-                self.local_search_decision(init_state, self.local_search(init_state, player), player)
+                decided_state = self.local_search_decision(init_state, self.local_search(init_state, player), player, s)
+            
         return decided_state
 
 if __name__ == "__main__":
-    # i = 1
-    # while (not halma.check_win_state_board(halma.board_state)):
-    #     print("="*8, "turn", i, "="*8)
-    #     print()
-    #     print_board(halma.minimax_decision(1))
-    #     halma.minimax_decision(2)
-    #     i+=1
-    #     print()
-    # e = time.time()v
-    # s = time.time()
-    # print("Waktu yang dibutuhkan : ", e-s)
-
+    halma = Halma(16, 3)
     def print_state(state):
         for row in state:
             print(row, end="\n")
@@ -357,7 +366,7 @@ if __name__ == "__main__":
             print("random state ke-"+str(i))
             for state in arridx[i]:
                 print(state, end="\n")
-    
+
     def print_board(board):
         for i in range(len(board)):
             for j in range(len(board)):
@@ -366,28 +375,41 @@ if __name__ == "__main__":
                 else :
                     print(board[i][j], end=" ")
 
-    halma = Halma(8, 10)
     bstate = halma.board_state
-    print("Initial State")
-    for arr in bstate:
-        print(arr, end="\n")
-    print()
-    postate = halma.possible_state(bstate, 1)
-
-    statearridx = halma.local_search(bstate,1)
-    decision = halma.local_search_decision(bstate,statearridx,1)
-    i=1
+    isLocal = False
+    s = time.time()
+    i = 1
     while (not halma.check_win_state_board(halma.board_state)):
         print("="*8, "turn", i, "="*8)
         print()
-        print_board(halma.local_search_decision(bstate,statearridx,1))
-        halma.local_search_decision(bstate,statearridx,2)
-        halma.minimax_decision(2)
+        print_board(halma.minimax_decision(1,isLocal))
+        halma.minimax_decision(2, isLocal)
         i+=1
         print()
+    e = time.time()
+    print("Waktu yang dibutuhkan : ", e-s)
+    # Minimax : 17.459042072296143
+    # Pake local :  8.71781849861145
+
+
+
+    # for tuplearr in statearridx:
+    #     print(tuplearr)
+    # deciszon = halma.local_search_decision(bstate,statearridx,1)
     
-    print_state(decision)
-    print_state(statearridx)
+    # i=1
+    # while (not halma.check_win_state_board(bstate)):
+    #     s = time.time()
+    #     print("="*8, "turn", i, "="*8)
+    #     print()
+    #     bstate = halma.local_search_decision(bstate, halma.local_search(bstate, i%2+1), i%2+1,s)
+    #     print_board(bstate)
+    #     # halma.minimax_decision(2)
+    #     i+=1
+    #     print()
+    
+    # print_state(decision)
+    # print_state(statearridx)
 
                     
     # a = Halma(8)
