@@ -26,7 +26,11 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
         if (seconds > 0) {
             setTimeout(() => setSeconds(seconds - 1), 1000);
         } else {
-            changeTurn();
+            console.log(P1);
+            console.log(turn);
+            if ((turn%2 === 0 && P1 === "Human") || (turn%2 !== 0 && P2 === "Human")) {
+                changeTurn();
+            }
         }
     }
     useEffect(() => {
@@ -274,10 +278,10 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
     return ( 
         <>
         <div>
-            {(seconds>0) ? 
+            {(seconds>0) && (P1 === "Human" || P2 === "Human") ? 
                 <div>
                     Time remaining : {seconds}
-                </div> : ""
+                </div> : <br></br>
             }
             
         </div>
@@ -290,11 +294,13 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
                 (win === 2) ? "Player 2 Win" : ""}
             </div>
             {boardComponent}
-            <button onClick={changeTurn} className="btn" disabled={!(P1 === "Human" || P2 === "Human")}>
-                <span>
-                    Next
-                </span>
-            </button>
+            {(P1 === "Human" || P2 === "Human") ?
+                <button onClick={changeTurn} className="btn">
+                    <span>
+                        Next
+                    </span>
+                </button> : <br></br>
+            }
             <button onClick={handleReset} className="btn">
                 <span>
                     Reset

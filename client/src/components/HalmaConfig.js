@@ -34,7 +34,7 @@ const HalmaConfig = ({ nextPage, bSize, time, setBSize, setTime, setBoard }) => 
                 </div>
             </div>
             <div>
-                <button onClick={nextPage} className="btn" >
+                <button onClick={nextPage} className="btn" disabled={bSize<=0 || time<= 0}>
                     <span>
                         Next
                     </span>
