@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {generateActionBasic, generateActionJump} from './HalmaService';
 import './Board.css';
 
 const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB}) => {
@@ -78,62 +79,11 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
     // bikin lagi cuma buat testing
     const generateValidAction = (x, y) => {
         if(hasJump){
-            return generateActionJump(x, y);
+            return generateActionJump(x, y, board, size);
         }else{
-            var listOfValidAction = generateActionBasic(x, y);
-            return listOfValidAction.concat(generateActionJump(x, y));
+            var listOfValidAction = generateActionBasic(x, y, board, size);
+            return listOfValidAction.concat(generateActionJump(x, y, board, size));
         }
-    }
-
-    // TODO : pake dari backend
-    const generateActionBasic = (x, y) => {
-        var listOfValidAction = [];
-        for(var i=x-1; i<x+2; i++){
-            if(i>=0 && i<size){
-                for(var j=y-1; j<y+2; j++){
-                    if(j>=0 && j<size){
-                        if(board[i][j] === 0){
-                            listOfValidAction.push({
-                                i,
-                                j,
-                                hasJump : false
-                            });
-                        }
-                    }
-                }
-            }
-        }
-
-        return listOfValidAction;
-    }
-
-
-    // TODO : pake dari backend
-    const generateActionJump = (x, y) => {
-        var listOfValidAction = [];
-        for(var i=x-1; i<x+2; i++){
-            const dif_i = i - x;
-
-            if(i>=0 && i<size){
-                for(var j=y-1; j<y+2; j++){
-                    if(j>=0 && j<size){
-                        const dif_j = j - y;
-                        const jump_i = i + dif_i;
-                        const jump_j = j + dif_j;
-                        if(jump_i >= 0 && jump_i < size && jump_j >= 0 && jump_j < size){
-                            if(board[jump_i][jump_j] === 0 && board[i][j] !== 0)
-                            listOfValidAction.push({
-                                i: jump_i,
-                                j: jump_j,
-                                hasJump : true
-                            });
-                        }
-                    }
-                }
-            }
-        }
-        
-        return listOfValidAction;
     }
 
     const handleClick = (i,j) => {
