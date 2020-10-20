@@ -15,7 +15,20 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
     });
 
     const [canMove, setCanMove] = useState([]);
+    const [seconds, setSeconds] = useState(time);
 
+
+    useEffect(() => {
+        tick();
+    });
+
+    function tick() {
+        if (seconds > 0) {
+            setTimeout(() => setSeconds(seconds - 1), 1000);
+        } else {
+            changeTurn();
+        }
+    }
     useEffect(() => {
         const winCondition = checkWinState(board, size);
         console.log(winCondition);
@@ -198,6 +211,7 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
     const changeTurn = () => {
         console.log(win);
         if(win === 0){
+            setSeconds(time);
             setTurn(turn => turn + 1);
             setHasJump(false);
             setHasStep(false);
@@ -258,6 +272,16 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
     })
 
     return ( 
+        <>
+        <div>
+            {(seconds>0) ? 
+                <div>
+                    Time remaining : {seconds}
+                </div> : ""
+            }
+            
+        </div>
+        <br></br>
         <div className="board-container">
             <div>
                 {(turn%2 === 0 && win === 0) ? "Player 1's Turn" : 
@@ -277,6 +301,7 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
                 </span>
             </button>
         </div>
+        </>
     );
 }
 

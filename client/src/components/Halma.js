@@ -9,24 +9,11 @@ const Halma = () => {
     const [P1, setP1] = useState("None");
     const [P2, setP2] = useState("None");
     const [turn, setTurn] = useState(0);
-    const [time, setTime] = useState(1);
+    const [time, setTime] = useState(5);
 
     const [bSize, setBSize] = useState(0);
     const [board, setBoard] = useState([]);
     const [page, setPage] = useState(1);
-    const [seconds, setSeconds] = useState(10);
-
-    useEffect(() => {
-        tick();
-    });
-
-    function tick() {
-        if (seconds > 0) {
-            setTimeout(() => setSeconds(seconds - 1), 1000);
-        } else {
-            setSeconds('TIME\'S UP!');
-        }
-    }
     
 
     const nextPage = () => {
@@ -38,7 +25,7 @@ const Halma = () => {
             setBSize(0);
             setP1("None");
             setP2("None");
-            setTime(1);
+            setTime(5);
         } else {
             setPage(page + 1);
         }
