@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {generateActionBasic, generateActionJump, checkWinState, isInBaseA, isInBaseB} from './HalmaService';
 import './Board.css';
 
-const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win, setWin, nextPage }) => {
+const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win, setWin, nextPage, startTime }) => {
     const [hasJump, setHasJump] = useState(false);
     const [hasStep, setHasStep] = useState(false);
     const [currPos, setCurrPos] = useState({
@@ -16,6 +16,7 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
 
     const [canMove, setCanMove] = useState([]);
     const [seconds, setSeconds] = useState(time);
+    const [totalTime, setTotalTime] = useState(0.0);
 
 
     useEffect(() => {
@@ -227,6 +228,9 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
                 i: -1,
                 j: -1
             });
+        } else {
+            const curr = new Date();
+            setTotalTime((curr - startTime)/1000);
         }
         
     };
@@ -300,6 +304,11 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
                         Next
                     </span>
                 </button> : <br></br>
+            }
+            {win !== 0 ?
+                <div>
+                    Total time : {totalTime} seconds
+                </div> : <br></br>
             }
             <button onClick={handleReset} className="btn">
                 <span>

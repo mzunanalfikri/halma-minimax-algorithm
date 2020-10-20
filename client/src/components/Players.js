@@ -1,7 +1,7 @@
 import React from 'react';
 import './Board.css';
 
-const Players = ({ P1, setP1, P2, setP2, previousPage, nextPage }) => {
+const Players = ({ P1, setP1, P2, setP2, previousPage, nextPage, setStartTime }) => {
     
     const handleP1SelectChange = e => {
         const algP1 = e.target.value;
@@ -10,6 +10,10 @@ const Players = ({ P1, setP1, P2, setP2, previousPage, nextPage }) => {
     const handleP2SelectChange = e => {
         const algP2 = e.target.value;
         setP2(algP2);
+    }
+    const handleNext = () => {
+        setStartTime(new Date());
+        nextPage();
     }
 
     return ( 
@@ -50,7 +54,7 @@ const Players = ({ P1, setP1, P2, setP2, previousPage, nextPage }) => {
                     Prev
                 </span>
             </button>
-            <button onClick={nextPage} className="btn" disabled={P1 === "None" || P2 === "None"}>
+            <button onClick={handleNext} className="btn" disabled={P1 === "None" || P2 === "None"}>
                 <span>
                     Next
                 </span>
