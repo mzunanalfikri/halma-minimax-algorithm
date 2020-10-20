@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import DisplayBoard from './DisplayBoard';
-import { checkWinState } from './HalmaService';
 import Players from './Players'
 import HalmaConfig from './HalmaConfig';
 
@@ -9,7 +8,7 @@ const Halma = () => {
     const [P1, setP1] = useState("None");
     const [P2, setP2] = useState("None");
     const [turn, setTurn] = useState(0);
-    const [time, setTime] = useState(5);
+    const [time, setTime] = useState(20);
 
     const [bSize, setBSize] = useState(0);
     const [board, setBoard] = useState([]);
@@ -26,7 +25,7 @@ const Halma = () => {
             setBSize(0);
             setP1("None");
             setP2("None");
-            setTime(5);
+            setTime(20);
         } else {
             setPage(page + 1);
         }

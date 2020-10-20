@@ -20,18 +20,28 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
 
 
     useEffect(() => {
-        tick();
-    });
+        let cancelled = false;
+        if (!cancelled) {
+            console.log(seconds);
+            tick();
+        }
+        return () => {
+            cancelled = true;
+        };
+    }, [seconds]);
 
     function tick() {
-        if (seconds > 0) {
-            setTimeout(() => setSeconds(seconds - 1), 1000);
-        } else {
-            console.log(P1);
+        if ((turn%2 === 0 && P1 === "Human") || (turn%2 !== 0 && P2 === "Human")) {
             console.log(turn);
-            if ((turn%2 === 0 && P1 === "Human") || (turn%2 !== 0 && P2 === "Human")) {
+            if (seconds > 0) {
+                console.log("m");
+                setTimeout(() => setSeconds(seconds - 1), 1000);
+            } else {
+                console.log(P1);
+                console.log(turn);
                 changeTurn();
             }
+            
         }
     }
     useEffect(() => {
@@ -216,8 +226,8 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
     const changeTurn = () => {
         console.log(win);
         if(win === 0){
-            setSeconds(time);
             setTurn(turn => turn + 1);
+            setSeconds(time);
             setHasJump(false);
             setHasStep(false);
             setCurrPos({
@@ -228,6 +238,9 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
                 i: -1,
                 j: -1
             });
+            const curr = new Date();
+            setTotalTime((curr - startTime)/1000);
+            console.log(totalTime);
         } else {
             const curr = new Date();
             setTotalTime((curr - startTime)/1000);
@@ -282,7 +295,7 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
     return ( 
         <>
         <div>
-            {(seconds>0) && (P1 === "Human" || P2 === "Human") ? 
+            {((turn%2 === 0 && P1 === "Human") || (turn%2 !== 0 && P2 === "Human")) ? 
                 <div>
                     Time remaining : {seconds}
                 </div> : <br></br>
