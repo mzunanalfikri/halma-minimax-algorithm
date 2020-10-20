@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {generateActionBasic, generateActionJump, checkWinState} from './HalmaService';
+import {generateActionBasic, generateActionJump, checkWinState, isInBaseA, isInBaseB} from './HalmaService';
 import './Board.css';
 
-const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB, win, setWin}) => {
+const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win, setWin, nextPage }) => {
     const [hasJump, setHasJump] = useState(false);
     const [hasStep, setHasStep] = useState(false);
     const [currPos, setCurrPos] = useState({
@@ -213,6 +213,13 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
         
     };
 
+    const handleReset = () => {
+        // setBoard([]);
+        // setWin(0);
+        // setTurn(0);
+        nextPage();
+    }
+
     const boardComponent = board.map((row, i) => {
         const cells = row.map((cell, j) => {
             var styles = "cell-board ";
@@ -259,9 +266,14 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
                 (win === 2) ? "Player 2 Win" : ""}
             </div>
             {boardComponent}
-            <button onClick={changeTurn} className="btn">
+            <button onClick={changeTurn} className="btn" disabled={!(P1 === "Human" || P2 === "Human")}>
                 <span>
                     Next
+                </span>
+            </button>
+            <button onClick={handleReset} className="btn">
+                <span>
+                    Reset
                 </span>
             </button>
         </div>

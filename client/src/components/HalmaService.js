@@ -1,3 +1,30 @@
+export function isInBaseA(i, j, size) {
+    return i<size/2 && j<size/2 - i
+}
+
+export function isInBaseB(i, j, size) {
+    return i>=size/2 && j>=size*3/2 - 1 - i;
+}
+export function initBoard(size) {
+    var arr = [];
+
+    for(var i=0;i<size;i++){
+        var rows = [];
+        for(var j=0;j<size;j++){
+            if(isInBaseA(i, j, size)){
+                rows.push(1);
+            }else if(isInBaseB(i, j, size)){
+                rows.push(2);
+            }else{
+                rows.push(0);
+            }
+        }
+        arr.push(rows);
+    }
+
+    return arr;
+}
+
 // TODO : pake dari backend
 export function generateActionBasic(x, y, board, size){
     var listOfValidAction = [];

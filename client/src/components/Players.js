@@ -1,7 +1,7 @@
 import React from 'react';
 import './Board.css';
 
-const Players = ({ P1, setP1, P2, setP2, isStart, setIsStart, handleReset, size }) => {
+const Players = ({ P1, setP1, P2, setP2, previousPage, nextPage }) => {
     
     const handleP1SelectChange = e => {
         const algP1 = e.target.value;
@@ -10,11 +10,6 @@ const Players = ({ P1, setP1, P2, setP2, isStart, setIsStart, handleReset, size 
     const handleP2SelectChange = e => {
         const algP2 = e.target.value;
         setP2(algP2);
-    }
-
-    const handleBtnGame = () => {
-        setIsStart(prev => !prev);
-        handleReset(size);
     }
 
     return ( 
@@ -50,9 +45,14 @@ const Players = ({ P1, setP1, P2, setP2, isStart, setIsStart, handleReset, size 
             </div>
         </div>
         <div>
-            <button onClick={handleBtnGame} className="btn" disabled={P1 === "None" || P2 === "None"}>
+            <button onClick={previousPage} className="btn">
                 <span>
-                    {isStart ? "Reset" : "Start"}
+                    Prev
+                </span>
+            </button>
+            <button onClick={nextPage} className="btn" disabled={P1 === "None" || P2 === "None"}>
+                <span>
+                    Next
                 </span>
             </button>
         </div>
