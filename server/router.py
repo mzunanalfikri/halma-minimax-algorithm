@@ -34,28 +34,28 @@ request - body
 {
     "state" : array state game,
     "player" : 1 or 2,
-    "time-limit" : x (in second)
+    "timelimit" : x (in second)
 }
 response 
 {
     next_state = array of state
 }
 '''
-@app.route('/best-decision-minimax')
+@app.route('/best-decision-minimax', methods=['POST'])
 def minimax():
     state = request.json['state']
     player = request.json['player']
-    time_limit = request.json['time-limit']
+    time_limit = request.json['timelimit']
     halma = Halma(len(state), time_limit)
     halma.board_state = state
     best_decision = halma.minimax_decision(player,False)
     return jsonify(next_state = best_decision)
 
-@app.route('/minimax-local')
+@app.route('/minimax-local', methods=['POST'])
 def minimax_local():
     state = request.json['state']
     player = request.json['player']
-    time_limit = request.json['time-limit']
+    time_limit = request.json['timelimit']
     halma = Halma(len(state), time_limit)
     halma.board_state = state
     best_decision = halma.minimax_decision(player,True)

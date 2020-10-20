@@ -1,15 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Board.css';
 
-const DisplayBoard = ({ board, setBoard, size, isInBaseA, isInBaseB}) => {
+const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB}) => {
     const [hasJump, setHasJump] = useState(false);
-    const [turn, setTurn] = useState(0);
     const [clicked, setClicked] = useState({
         i: -1,
         j: -1
     });
 
     const [canMove, setCanMove] = useState([]);
+
+    useEffect( () => {
+        const getMinimax = async () => {
+            const params = {
+                state : board,
+                player : turn%2 + 1,
+                timelimit : time
+            }
+            const res = await fetch('/best-decision-minimax', {
+                method: 'POST',
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(params)
+            }).then(response => response.json());
+            const minimax = res;
+            console.log(minimax);
+            setBoard(minimax.next_state);
+            changeTurn();
+        }
+
+        const getMinimaxLocalSearch = async () => {
+            const params = {
+                state : board,
+                player : turn%2 + 1,
+                timelimit : time
+            }
+            const res = await fetch('/minimax-local', {
+                method: 'POST',
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(params)
+            }).then(response => response.json());
+
+            const minimax = res;
+            console.log(minimax);
+            setBoard(minimax.next_state);
+            changeTurn();
+        }
+
+        if(turn === 0){
+            if(P1 === "Minimax"){
+                getMinimax();
+            }else if(P1 === "Minimax with local search"){
+                getMinimaxLocalSearch();
+            }
+        }else{
+            if(turn%2 === 0){
+                if(P1 === "Minimax"){
+                    getMinimax();
+                }else if(P1 === "Minimax with local search"){
+                    getMinimaxLocalSearch();
+                }
+            }else{
+                if(P2 === "Minimax"){
+                    getMinimax();
+                }else if(P2 === "Minimax with local search"){
+                    getMinimaxLocalSearch();
+                }
+            }
+        }
+        console.log('yee turn ganti');
+    }, [turn]);
 
     // TODO : nanti ganti pake yang dari backend
     // bikin lagi cuma buat testing

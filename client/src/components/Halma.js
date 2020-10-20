@@ -3,6 +3,12 @@ import DisplayBoard from './DisplayBoard';
 import Players from './Players'
 
 const Halma = () => {
+    const [P1, setP1] = useState("None");
+    const [P2, setP2] = useState("None");
+    const [turn, setTurn] = useState(0);
+    const [time, setTime] = useState(1);
+    const [isStart, setIsStart] = useState(false);
+
     const [bSize, setBSize] = useState(0);
     const [board, setBoard] = useState([]);
     // const [seconds, setSeconds] = useState(10);
@@ -25,6 +31,14 @@ const Halma = () => {
 
     const isInBaseB = (i, j, size) => {
         return i>=size/2 && j>=size*3/2 - 1 - i;
+    }
+
+    const handleReset = (size) => {
+        setBoard([]);
+        const arr = initBoard(size);
+        setBoard(arr);
+
+        setTurn(0);
     }
 
     const initBoard = (size) => {
@@ -50,10 +64,8 @@ const Halma = () => {
     const handleSelectChange = e => {
         const size = e.target.value;
         setBSize(size);
-        
-        setBoard([]);
-        const arr = initBoard(size);
-        setBoard(arr);
+
+        handleReset(size);
     }
 
     return ( 
@@ -61,7 +73,17 @@ const Halma = () => {
             <div>
                 Halma
             </div>
-            <Players />
+            <input type="number" onChange={(e) => setTime(e.target.value)} value={time} />
+            <Players 
+                P1={P1}
+                setP1={setP1}
+                P2={P2}
+                setP2={setP2}
+                isStart={isStart}
+                setIsStart={setIsStart}
+                size={bSize}
+                handleReset={handleReset}
+            />
             <div>
                 select board size
             </div>
@@ -74,8 +96,13 @@ const Halma = () => {
             <div>
                 {bSize}
             </div>
-            {board.length > 0 && (
+            {(board.length > 0 && isStart) && (
                 <DisplayBoard board={board} size={bSize}
+                P1={P1}
+                P2={P2}
+                time={time}
+                turn={turn}
+                setTurn={setTurn}
                 setBoard={setBoard}
                 isInBaseA={isInBaseA}
                 isInBaseB={isInBaseB}

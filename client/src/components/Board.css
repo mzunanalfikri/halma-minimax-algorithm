@@ -95,6 +95,10 @@
     background-color: lightblue;
 }
 
+.btn:disabled{
+    background-color: gray;
+}
+
 .row {
     padding: 50px 300px;
 }

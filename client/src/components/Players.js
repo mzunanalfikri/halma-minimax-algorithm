@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './Board.css';
 
-const Players = () => {
-    const [P1, setP1] = useState("None");
-    const [P2, setP2] = useState("None");
-
+const Players = ({ P1, setP1, P2, setP2, isStart, setIsStart, handleReset, size }) => {
+    
     const handleP1SelectChange = e => {
         const algP1 = e.target.value;
         setP1(algP1);
@@ -13,7 +11,14 @@ const Players = () => {
         const algP2 = e.target.value;
         setP2(algP2);
     }
+
+    const handleBtnGame = () => {
+        setIsStart(prev => !prev);
+        handleReset(size);
+    }
+
     return ( 
+        <>
         <div className="row">
             <div className="column">
                 <div>
@@ -44,6 +49,14 @@ const Players = () => {
                 </div>
             </div>
         </div>
+        <div>
+            <button onClick={handleBtnGame} className="btn" disabled={P1 === "None" || P2 === "None"}>
+                <span>
+                    {isStart ? "Reset" : "Start"}
+                </span>
+            </button>
+        </div>
+        </>
     );
 }
 
