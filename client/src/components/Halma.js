@@ -40,7 +40,7 @@ const Halma = () => {
         setBoard([]);
         const arr = initBoard(size);
         setBoard(arr);
-
+        setWin(0);
         setTurn(0);
     }
 
