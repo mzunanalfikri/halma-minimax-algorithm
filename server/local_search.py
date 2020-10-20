@@ -3,7 +3,7 @@ import time
 import math
 import sys
 
-sys.setrecursionlimit(10000)
+sys.setrecursionlimit(5000)
 
 MAX_DEPTH = 2
 class Halma:
@@ -396,11 +396,10 @@ if __name__ == "__main__":
     # print()
 
     statearridx = halma.local_search(bstate,1)
-    halma.local_search_decision_alt(bstate,statearridx,1)
     i = 1
     # Minimax : 17.459042072296143
     # Pake local :  8.71781849861145
-    isLocal = True
+    isLocal = False
     s = time.time()
     while (not halma.check_win_state_board(halma.board_state)):
         print("="*8, "turn", i, "="*8)
