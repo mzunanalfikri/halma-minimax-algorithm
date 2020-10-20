@@ -88,12 +88,12 @@ export function checkWinState(board, size){
 
     let win1 = true;
     let win2 = true;
-    for(var i=0;i<pion1.length;i++){
+    for(i=0;i<pion1.length;i++){
         if(pion1[i].x + pion1[i].y < size*3/2 - 1){
             win1= false;
         }
     }
-    for(var i=0;i<pion2.length;i++){
+    for(i=0;i<pion2.length;i++){
         if(pion2[i].x + pion2[i].y > size/2 - 1){
             win2= false;
         }
