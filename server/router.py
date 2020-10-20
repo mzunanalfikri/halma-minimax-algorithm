@@ -64,7 +64,7 @@ response
 def minimax():
     state = request.json['state']
     player = request.json['player']
-    time_limit = request.json['timelimit']
+    time_limit = int(request.json['timelimit'])
     halma = Halma(len(state), time_limit)
     halma.board_state = state
     best_decision = halma.minimax_decision(player,False)
@@ -74,7 +74,7 @@ def minimax():
 def minimax_local():
     state = request.json['state']
     player = request.json['player']
-    time_limit = request.json['timelimit']
+    time_limit = int(request.json['timelimit'])
     halma = Halma(len(state), time_limit)
     halma.board_state = state
     best_decision = halma.minimax_decision(player,True)
