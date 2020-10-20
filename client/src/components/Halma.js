@@ -26,13 +26,7 @@ const Halma = () => {
     //         setSeconds('TIME'S UP!');
     //     }
     // }
-    useEffect(() => {
-        const winCondition = checkWinState(board, bSize);
-        console.log(winCondition);
-        if(winCondition !== 0){
-            setWin(winCondition);
-        }
-    }, [board]);
+    
 
     const isInBaseA = (i, j, size) => {
         return i<size/2 && j<size/2 - i
@@ -116,6 +110,7 @@ const Halma = () => {
                 isInBaseA={isInBaseA}
                 isInBaseB={isInBaseB}
                 win={win}
+                setWin={setWin}
                 />
             )}
         </div>

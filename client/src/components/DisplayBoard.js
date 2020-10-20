@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {generateActionBasic, generateActionJump} from './HalmaService';
+import {generateActionBasic, generateActionJump, checkWinState} from './HalmaService';
 import './Board.css';
 
-const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB, win}) => {
+const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isInBaseA, isInBaseB, win, setWin}) => {
     const [hasJump, setHasJump] = useState(false);
     const [clicked, setClicked] = useState({
         i: -1,
@@ -10,6 +10,14 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
     });
 
     const [canMove, setCanMove] = useState([]);
+
+    useEffect(() => {
+        const winCondition = checkWinState(board, size);
+        console.log(winCondition);
+        if(winCondition !== 0){
+            setWin(winCondition);
+        }
+    }, [board]);
 
     useEffect( () => {
         const getMinimax = async () => {
@@ -158,6 +166,7 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
         if(win === 0){
             setTurn(turn => turn + 1);
         }
+        
     };
 
     const boardComponent = board.map((row, i) => {
@@ -205,7 +214,7 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, isIn
                 (win === 2) ? "Player B Win" : ""}
             </div>
             {boardComponent}
-            <button onClick={changeTurn} className="btn" disabled={win !== 0}>
+            <button onClick={changeTurn} className="btn">
                 <span>
                     Next
                 </span>
