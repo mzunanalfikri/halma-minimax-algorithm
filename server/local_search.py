@@ -233,7 +233,7 @@ class Halma:
             for j in range(self.bSize):
                 if state[i][j] == 1:
                     pion1.append((i,j))
-                else:
+                elif state[i][j] == 2: 
                     pion2.append((i,j))
         win1 = True
         win2 = True
@@ -323,6 +323,7 @@ class Halma:
         randomed_state = arr_local[randidx[0]]
 
         arr_obj_local.sort(reverse=True)
+        
 
         return randomed_state
     
@@ -335,7 +336,7 @@ class Halma:
         print("Obj val init_state: " + str(init_obj))
         print("Obj val randomed_state: " + str(rand_obj))
         
-        if not self.check_win_state_board(init_state):
+        if not self.check_win_state_board(init_state) :
             if time.time() - s > self.time_limit :
                 return init_state
             if(rand_obj >= init_obj):
@@ -379,7 +380,7 @@ if __name__ == "__main__":
                 else :
                     print(board[i][j], end=" ")
 
-    halma = Halma(8, 10)
+    halma = Halma(16, 10)
     bstate = halma.board_state
     print("Initial State")
     for arr in bstate:
