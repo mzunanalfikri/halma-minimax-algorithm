@@ -120,20 +120,6 @@ class Halma:
                 listOfValidState.append((state, pos, action))
         
         return listOfValidState
-
-
-    def check_win_state(self, turn) :
-        if turn == 0 :
-            for x,y in self.pos_A :
-                if x + y < self.bSize*3/2 - 1:
-                    return False
-            return True
-        else :
-            for x,y in self.pos_B :
-                if x + y > self.bSize/2 - 1 :
-                    return False
-                
-            return True
     
     def objective_func(self, state, player, position):
         if player == 1:

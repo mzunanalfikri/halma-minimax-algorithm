@@ -19,7 +19,7 @@ response :
     "possible-move" : [[x,y], [x1,y1]]
 }
 '''
-@app.route('/possible-one-move-step')
+@app.route('/possible-one-move-step', methods=['POST'])
 def possible_one_move_step():
     state = request.json['state']
     position = request.json['position']
@@ -39,7 +39,7 @@ response :
     "possible-move" : [[x,y], [x1,y1]]
 }
 '''
-@app.route('/possible-one-move-jump')
+@app.route('/possible-one-move-jump', methods=['POST'])
 def possible_one_move_jump():
     state = request.json['state']
     position = request.json['position']
