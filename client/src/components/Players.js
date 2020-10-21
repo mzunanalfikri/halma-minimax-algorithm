@@ -39,7 +39,6 @@ const Players = ({ P1, setP1, P2, setP2, previousPage, nextPage, setStartTime })
                 </div>
                 <select value={P2} onChange={handleP2SelectChange}>
                     <option value="None">None</option>
-                    <option value="Human">Human</option>
                     <option value="Minimax">Minimax</option>
                     <option value="Minimax with local search">Minimax with local search</option>
                 </select>
