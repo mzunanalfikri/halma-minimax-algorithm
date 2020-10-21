@@ -40,6 +40,8 @@ const DisplayBoard = ({ P1, P2, time, turn, setTurn, board, setBoard, size, win,
                 console.log(P1);
                 console.log(turn);
                 changeTurn();
+                // setSeconds(time);
+                setTimeout(() => setSeconds(seconds - 1), 1000);
             }
             
         }
